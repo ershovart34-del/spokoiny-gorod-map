@@ -30,6 +30,7 @@
             top: 0;
             z-index: 1000;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            -webkit-overflow-scrolling: touch;
         }
         
         .menu-item {
@@ -41,11 +42,17 @@
             font-weight: 500;
             color: #2b5278;
             cursor: pointer;
+            transition: all 0.2s;
         }
         
         .menu-item.active {
             background: #2b5278;
             color: white;
+        }
+        
+        .menu-item.admin {
+            background: #ffd700;
+            color: #000;
         }
         
         /* Контейнеры разделов */
@@ -64,6 +71,7 @@
             height: 400px;
             border-radius: 10px;
             margin-bottom: 10px;
+            border: 1px solid #ddd;
         }
         
         /* Кнопки */
@@ -82,6 +90,11 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
+            transition: opacity 0.2s;
+        }
+        
+        .button:active {
+            opacity: 0.8;
         }
         
         .button.secondary {
@@ -94,6 +107,11 @@
             background: #dc3545;
         }
         
+        .button.small {
+            padding: 8px;
+            font-size: 14px;
+        }
+        
         /* Карточки */
         .card {
             background: white;
@@ -101,12 +119,18 @@
             padding: 15px;
             margin-bottom: 10px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        
+        .card:active {
+            transform: scale(0.98);
         }
         
         .card-title {
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             color: #2b5278;
+            font-size: 16px;
         }
         
         /* Сетка для услуг */
@@ -124,10 +148,17 @@
             padding: 15px;
             text-align: center;
             cursor: pointer;
+            transition: all 0.2s;
         }
         
         .service-item:active {
             background: #f0f2f5;
+            transform: scale(0.95);
+        }
+        
+        .service-item.selected {
+            border: 2px solid #2b5278;
+            background: #e3f2fd;
         }
         
         /* Районы */
@@ -146,6 +177,12 @@
             text-align: center;
             font-size: 12px;
             cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .district-item:active {
+            transform: scale(0.95);
         }
         
         .district-item.green {
@@ -160,6 +197,26 @@
             border-left: 4px solid #dc3545;
         }
         
+        /* Подписки */
+        .subscription-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+        }
+        
+        .subscription-card.active {
+            border: 2px solid #2b5278;
+            background: #e3f2fd;
+        }
+        
+        .subscription-price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2b5278;
+        }
+        
         /* Нижняя навигация */
         .bottom-nav {
             position: fixed;
@@ -169,8 +226,8 @@
             background: white;
             display: flex;
             justify-content: space-around;
-            padding: 10px;
-            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+            padding: 8px 5px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
             z-index: 1000;
         }
         
@@ -178,7 +235,10 @@
             text-align: center;
             color: #999;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
+            flex: 1;
+            padding: 5px 0;
+            transition: color 0.2s;
         }
         
         .nav-item.active {
@@ -206,6 +266,7 @@
             font-weight: 500;
             margin-bottom: 5px;
             display: block;
+            color: #333;
         }
         
         /* Статусы */
@@ -232,10 +293,26 @@
             color: #721c24;
         }
         
+        .badge.info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .badge.premium {
+            background: #ffd700;
+            color: #000;
+        }
+        
         /* Рейтинг */
         .rating {
             color: #ffc107;
-            font-size: 18px;
+            font-size: 16px;
+            margin: 5px 0;
+        }
+        
+        .stars {
+            color: #ffc107;
+            letter-spacing: 2px;
         }
         
         /* Индикатор загрузки */
@@ -243,8 +320,8 @@
             border: 3px solid #f3f3f3;
             border-top: 3px solid #2b5278;
             border-radius: 50%;
-            width: 30px;
-            height: 30px;
+            width: 40px;
+            height: 40px;
             animation: spin 1s linear infinite;
             margin: 20px auto;
         }
@@ -253,34 +330,204 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        /* Модальные окна */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .modal-close {
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        /* Список событий */
+        .event-item {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-left: 4px solid #2b5278;
+            cursor: pointer;
+        }
+        
+        .event-item.dps { border-left-color: #dc3545; }
+        .event-item.dtp { border-left-color: #fd7e14; }
+        .event-item.yama { border-left-color: #795548; }
+        .event-item.closure { border-left-color: #ffc107; }
+        
+        /* Строка поиска */
+        .search-box {
+            background: white;
+            border-radius: 20px;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-box input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 14px;
+            padding: 0 10px;
+        }
+        
+        /* Информационная строка */
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        /* Админ панель */
+        .admin-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2b5278;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* Чат */
+        .chat-message {
+            background: white;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            max-width: 80%;
+        }
+        
+        .chat-message.mine {
+            background: #2b5278;
+            color: white;
+            margin-left: auto;
+        }
+        
+        .chat-message .author {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .chat-message.mine .author {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .chat-input {
+            display: flex;
+            gap: 10px;
+            position: sticky;
+            bottom: 70px;
+            background: white;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+        }
+        
+        .chat-input button {
+            background: #2b5278;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <!-- Верхнее меню -->
-    <div class="menu">
+    <div class="menu" id="main-menu">
         <div class="menu-item active" onclick="showSection('map')">📍 Карта</div>
         <div class="menu-item" onclick="showSection('help')">🆘 Помощь</div>
         <div class="menu-item" onclick="showSection('sos')">🚨 SOS</div>
         <div class="menu-item" onclick="showSection('service')">🔧 Сервис</div>
         <div class="menu-item" onclick="showSection('chat')">💬 Чат</div>
+        <div class="menu-item" onclick="showSection('subscriptions')">🔔 Подписки</div>
+        <div class="menu-item" onclick="showSection('feedback')">📝 Отзывы</div>
         <div class="menu-item" onclick="showSection('profile')">👤 Профиль</div>
+        <!-- Админ пункт добавится скриптом -->
     </div>
     
     <!-- Секция: Карта -->
     <div id="map-section" class="section active">
         <div id="map"></div>
         
-        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-            <button class="button secondary" onclick="centerMap()">📍 Моё местоположение</button>
-            <button class="button" onclick="showEventForm()">➕ Сообщить</button>
+        <div style="display: flex; gap: 10px; margin: 10px 0;">
+            <button class="button secondary small" onclick="centerMap()" style="flex: 1;">📍 Моё местоположение</button>
+            <button class="button small" onclick="showEventForm()" style="flex: 1;">➕ Сообщить</button>
         </div>
         
+        <h3 style="margin: 15px 0 10px 0;">📍 Районы Волгограда</h3>
         <div class="districts-grid" id="districts-list">
             <!-- Районы будут загружены -->
+            <div class="loader" style="width: 30px; height: 30px;"></div>
         </div>
         
+        <h3 style="margin: 15px 0 10px 0;">📋 Последние события</h3>
         <div id="events-list">
             <!-- События будут загружены -->
+            <div class="loader"></div>
         </div>
     </div>
     
@@ -290,41 +537,49 @@
         
         <div class="services-grid">
             <div class="service-item" onclick="selectService('evacuator')">
-                <div style="font-size: 24px;">🚛</div>
-                <div>Эвакуатор</div>
+                <div style="font-size: 32px;">🚛</div>
+                <div style="font-weight: 500;">Эвакуатор</div>
             </div>
             <div class="service-item" onclick="selectService('commissioner')">
-                <div style="font-size: 24px;">👮</div>
-                <div>Аварком</div>
+                <div style="font-size: 32px;">👮</div>
+                <div style="font-weight: 500;">Аварком</div>
             </div>
             <div class="service-item" onclick="selectService('tech')">
-                <div style="font-size: 24px;">🔧</div>
-                <div>Техпомощь</div>
+                <div style="font-size: 32px;">🔧</div>
+                <div style="font-weight: 500;">Техпомощь</div>
             </div>
             <div class="service-item" onclick="selectService('tire')">
-                <div style="font-size: 24px;">🛞</div>
-                <div>Шиномонтаж</div>
+                <div style="font-size: 32px;">🛞</div>
+                <div style="font-weight: 500;">Шиномонтаж</div>
             </div>
             <div class="service-item" onclick="selectService('electric')">
-                <div style="font-size: 24px;">⚡</div>
-                <div>Электрик</div>
+                <div style="font-size: 32px;">⚡</div>
+                <div style="font-weight: 500;">Электрик</div>
             </div>
             <div class="service-item" onclick="selectService('other')">
-                <div style="font-size: 24px;">🚑</div>
-                <div>Прочее</div>
+                <div style="font-size: 32px;">🚑</div>
+                <div style="font-weight: 500;">Прочее</div>
             </div>
         </div>
         
         <div id="help-form" style="display: none;">
-            <h3>Детали заказа</h3>
+            <h3 style="margin: 15px 0;">📝 Детали заказа</h3>
+            
             <label class="label">Ваш телефон:</label>
-            <input type="text" class="input" id="help-phone" placeholder="+7 (999) 123-45-67">
+            <input type="tel" class="input" id="help-phone" placeholder="+7 (999) 123-45-67" value="+7">
+            
+            <label class="label">Адрес или местоположение:</label>
+            <input type="text" class="input" id="help-address" placeholder="Например: ул. Ленина, 10">
             
             <label class="label">Описание проблемы:</label>
-            <textarea class="input" id="help-desc" rows="3" placeholder="Опишите проблему..."></textarea>
+            <textarea class="input" id="help-desc" rows="3" placeholder="Опишите проблему подробнее..."></textarea>
             
             <button class="button" onclick="createHelpRequest()">✅ Отправить заявку</button>
-            <button class="button secondary" onclick="hideHelpForm()">Отмена</button>
+            <button class="button secondary" onclick="hideHelpForm()">❌ Отмена</button>
+        </div>
+        
+        <div id="help-info" style="text-align: center; color: #666; margin-top: 20px;">
+            <p>Выберите нужную услугу для вызова мастера</p>
         </div>
     </div>
     
@@ -334,32 +589,45 @@
         
         <div class="card" onclick="callNumber('102')">
             <div class="card-title">🚔 ГИБДД</div>
-            <div style="font-size: 24px;">102</div>
+            <div style="font-size: 24px; font-weight: bold;">102</div>
+            <div style="color: #666; font-size: 12px; margin-top: 5px;">Нажмите чтобы позвонить</div>
         </div>
         
         <div class="card" onclick="callNumber('103')">
             <div class="card-title">🚑 Скорая помощь</div>
-            <div style="font-size: 24px;">103</div>
+            <div style="font-size: 24px; font-weight: bold;">103</div>
+            <div style="color: #666; font-size: 12px; margin-top: 5px;">Нажмите чтобы позвонить</div>
         </div>
         
         <div class="card" onclick="callNumber('101')">
             <div class="card-title">🔥 МЧС</div>
-            <div style="font-size: 24px;">101</div>
+            <div style="font-size: 24px; font-weight: bold;">101</div>
+            <div style="color: #666; font-size: 12px; margin-top: 5px;">Нажмите чтобы позвонить</div>
         </div>
         
         <div class="card" onclick="callNumber('112')">
-            <div class="card-title">📞 Единая служба</div>
-            <div style="font-size: 24px;">112</div>
+            <div class="card-title">📞 Единая служба спасения</div>
+            <div style="font-size: 24px; font-weight: bold;">112</div>
+            <div style="color: #666; font-size: 12px; margin-top: 5px;">Нажмите чтобы позвонить</div>
         </div>
         
         <button class="button" onclick="sendSOSLocation()">
-            📍 Отправить координаты
+            📍 Отправить мои координаты
         </button>
+        
+        <p style="text-align: center; color: #666; font-size: 12px; margin-top: 10px;">
+            В экстренной ситуации звоните 112
+        </p>
     </div>
     
     <!-- Секция: Сервис (мастера) -->
     <div id="service-section" class="section">
         <h2 style="margin-bottom: 15px;">🔧 Мастера и сервисы</h2>
+        
+        <div class="search-box">
+            <span>🔍</span>
+            <input type="text" id="master-search" placeholder="Поиск по услугам или названию" oninput="searchMasters()">
+        </div>
         
         <div style="margin-bottom: 15px;">
             <label class="label">Выберите район:</label>
@@ -378,12 +646,68 @@
     <div id="chat-section" class="section">
         <h2 style="margin-bottom: 15px;">💬 Чат взаимопомощи</h2>
         
-        <button class="button" onclick="createChatRequest()">
-            ➕ Создать запрос
-        </button>
+        <div style="margin-bottom: 15px;">
+            <button class="button small" onclick="loadChatRequests()">📋 Активные запросы</button>
+            <button class="button secondary small" onclick="showChatRequestForm()">➕ Создать запрос</button>
+        </div>
         
         <div id="chat-requests">
             <!-- Запросы будут загружены -->
+            <div class="loader"></div>
+        </div>
+        
+        <!-- Чат переписки (будет показываться при выборе запроса) -->
+        <div id="chat-messages" style="display: none;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <h3 id="chat-title"></h3>
+                <button class="button secondary small" onclick="hideChatMessages()">Назад</button>
+            </div>
+            <div id="messages-list" style="height: 400px; overflow-y: auto; margin-bottom: 10px;">
+                <!-- Сообщения -->
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chat-input-text" placeholder="Введите сообщение...">
+                <button onclick="sendChatMessage()">Отправить</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Секция: Подписки на районы -->
+    <div id="subscriptions-section" class="section">
+        <h2 style="margin-bottom: 15px;">🔔 Подписки на районы</h2>
+        
+        <div class="card">
+            <div class="card-title">Бесплатная подписка</div>
+            <p>Получайте уведомления о событиях в выбранных районах (с задержкой)</p>
+            <button class="button secondary small" onclick="showFreeSubscription()">Управлять</button>
+        </div>
+        
+        <div class="card" style="border: 2px solid gold;">
+            <div class="card-title">💎 Премиум подписка</div>
+            <p>Моментальные уведомления, приоритетная поддержка</p>
+            <div class="subscription-price">от 30 ⭐️ в месяц</div>
+            <button class="button small" onclick="showPremiumSubscription()">Выбрать тариф</button>
+        </div>
+        
+        <h3 style="margin: 20px 0 10px 0;">Мои подписки</h3>
+        <div id="my-subscriptions">
+            <!-- Список подписок пользователя -->
+            <div class="loader" style="width: 30px; height: 30px;"></div>
+        </div>
+    </div>
+    
+    <!-- Секция: Отзывы -->
+    <div id="feedback-section" class="section">
+        <h2 style="margin-bottom: 15px;">📝 Отзывы о проекте</h2>
+        
+        <button class="button" onclick="showFeedbackForm()">
+            ✍️ Оставить отзыв
+        </button>
+        
+        <h3 style="margin: 20px 0 10px 0;">Последние отзывы</h3>
+        <div id="feedback-list">
+            <!-- Отзывы будут загружены -->
+            <div class="loader"></div>
         </div>
     </div>
     
@@ -393,18 +717,34 @@
         
         <div class="card" id="profile-info">
             <!-- Информация о пользователе -->
+            <div class="loader" style="width: 30px; height: 30px;"></div>
+        </div>
+        
+        <div id="master-controls" style="display: none;">
+            <div style="display: flex; gap: 10px; margin: 15px 0;">
+                <button class="button secondary small" id="online-btn" style="flex: 1;" onclick="toggleOnline()">🟢 На линии</button>
+                <button class="button secondary small" id="offline-btn" style="flex: 1; display: none;" onclick="toggleOnline()">🔴 Не на линии</button>
+            </div>
+            
+            <button class="button secondary" onclick="showMasterStats()">
+                📊 Моя статистика
+            </button>
+            
+            <button class="button secondary" onclick="showMasterEditForm()">
+                ✏️ Редактировать данные
+            </button>
         </div>
         
         <button class="button" onclick="showMyOrders()">
             📜 Мои заказы
         </button>
         
-        <button class="button secondary" onclick="becomeMaster()">
+        <button class="button secondary" onclick="showBecomeMasterForm()">
             🔧 Стать мастером
         </button>
         
-        <button class="button secondary" onclick="showFeedbackForm()">
-            📝 Оставить отзыв
+        <button class="button secondary" onclick="showComplaintForm()">
+            ⚠️ Подать жалобу
         </button>
         
         <button class="button danger" onclick="logout()">
@@ -412,33 +752,393 @@
         </button>
     </div>
     
-    <!-- Форма создания события -->
-    <div id="event-form" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: white; z-index: 2000; padding: 20px; overflow-y: auto;">
-        <h2 style="margin-bottom: 15px;">➕ Сообщить о событии</h2>
+    <!-- Секция: Админ панель -->
+    <div id="admin-section" class="section">
+        <h2 style="margin-bottom: 15px;">👑 Админ панель</h2>
         
-        <label class="label">Тип события:</label>
-        <select class="input" id="event-type">
-            <option value="ДПС">🚔 ДПС / пост</option>
-            <option value="ДТП">💥 Авария / ДТП</option>
-            <option value="перекрытие">🚧 Перекрытие / ремонт</option>
-            <option value="яма">🕳️ Опасная яма</option>
-            <option value="другое">📸 Другое</option>
-        </select>
+        <div class="admin-stats-grid" id="admin-stats">
+            <div class="stat-card">
+                <div class="stat-value" id="stat-users">0</div>
+                <div class="stat-label">Пользователей</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-masters">0</div>
+                <div class="stat-label">Мастеров</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-orders">0</div>
+                <div class="stat-label">Заказов</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-events">0</div>
+                <div class="stat-label">Событий</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-feedback">0</div>
+                <div class="stat-label">Отзывов</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-complaints">0</div>
+                <div class="stat-label">Жалоб</div>
+            </div>
+        </div>
         
-        <label class="label">Район:</label>
-        <select class="input" id="event-district">
-            <!-- Районы будут загружены -->
-        </select>
+        <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+            <button class="button secondary small" style="flex: 1;" onclick="loadAdminStats()">
+                🔄 Обновить
+            </button>
+            <button class="button secondary small" style="flex: 1;" onclick="loadPendingMasters()">
+                📋 Заявки мастеров
+            </button>
+            <button class="button secondary small" style="flex: 1;" onclick="loadPendingStatus()">
+                ⭐ Заявки на статус
+            </button>
+            <button class="button secondary small" style="flex: 1;" onclick="loadComplaints()">
+                ⚠️ Жалобы
+            </button>
+        </div>
         
-        <label class="label">Комментарий:</label>
-        <textarea class="input" id="event-comment" rows="3" placeholder="Опишите подробнее..."></textarea>
+        <h3 style="margin: 15px 0 10px 0;">📋 Неподтверждённые мастера</h3>
+        <div id="pending-masters-list">
+            <!-- Список мастеров -->
+        </div>
         
-        <button class="button" onclick="submitEvent()">✅ Отправить</button>
-        <button class="button secondary" onclick="hideEventForm()">❌ Отмена</button>
+        <h3 style="margin: 20px 0 10px 0;">⭐ Заявки на повышение статуса</h3>
+        <div id="pending-status-list">
+            <!-- Заявки на статус -->
+        </div>
+        
+        <h3 style="margin: 20px 0 10px 0;">⚠️ Жалобы</h3>
+        <div id="complaints-list">
+            <!-- Жалобы -->
+        </div>
+        
+        <h3 style="margin: 20px 0 10px 0;">📊 Действия</h3>
+        <button class="button secondary" onclick="showBroadcastForm()">
+            📢 Рассылка
+        </button>
+        <button class="button secondary" onclick="showCreateStatusRequestForm()">
+            📝 Создать заявку на статус
+        </button>
     </div>
     
-    <!-- Нижняя навигация (дублирующая) -->
-    <div class="bottom-nav">
+    <!-- Модальное окно: Добавление события -->
+    <div class="modal" id="event-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>➕ Сообщить о событии</h3>
+                <span class="modal-close" onclick="hideEventForm()">&times;</span>
+            </div>
+            
+            <label class="label">Тип события:</label>
+            <select class="input" id="event-type">
+                <option value="🚔 ДПС / пост">🚔 ДПС / пост</option>
+                <option value="💥 Авария / ДТП">💥 Авария / ДТП</option>
+                <option value="🚧 Перекрытие / ремонт">🚧 Перекрытие / ремонт</option>
+                <option value="🕳️ Опасная яма">🕳️ Опасная яма</option>
+                <option value="📸 Другое">📸 Другое</option>
+            </select>
+            
+            <label class="label">Район:</label>
+            <select class="input" id="event-district">
+                <!-- Районы будут загружены -->
+            </select>
+            
+            <label class="label">Комментарий:</label>
+            <textarea class="input" id="event-comment" rows="3" placeholder="Опишите подробнее..."></textarea>
+            
+            <button class="button" onclick="submitEvent()">✅ Отправить</button>
+            <button class="button secondary" onclick="hideEventForm()">❌ Отмена</button>
+        </div>
+    </div>
+    
+    <!-- Модальное окно: Стать мастером -->
+    <div class="modal" id="master-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🔧 Регистрация мастера</h3>
+                <span class="modal-close" onclick="hideMasterForm()">&times;</span>
+            </div>
+            
+            <label class="label">Ваш телефон:</label>
+            <input type="tel" class="input" id="master-phone" placeholder="+7 (999) 123-45-67">
+            
+            <label class="label">Доп. телефон (необязательно):</label>
+            <input type="tel" class="input" id="master-phone2" placeholder="+7 (999) 123-45-67">
+            
+            <label class="label">Email (необязательно):</label>
+            <input type="email" class="input" id="master-email" placeholder="mail@example.com">
+            
+            <label class="label">Название компании (если есть):</label>
+            <input type="text" class="input" id="master-company" placeholder="ИП Иванов или ООО">
+            
+            <label class="label">Тип компании:</label>
+            <select class="input" id="master-type">
+                <option value="ИП">ИП</option>
+                <option value="ООО">ООО</option>
+                <option value="Самозанятый">Самозанятый</option>
+                <option value="Частное лицо">Частное лицо</option>
+            </select>
+            
+            <label class="label">ИНН (если есть):</label>
+            <input type="text" class="input" id="master-inn" placeholder="1234567890">
+            
+            <label class="label">Услуги (через запятую):</label>
+            <input type="text" class="input" id="master-services" placeholder="Эвакуатор, шиномонтаж, техпомощь">
+            
+            <label class="label">Район работы:</label>
+            <select class="input" id="master-district">
+                <!-- Районы будут загружены -->
+            </select>
+            
+            <label class="label">Адрес/местоположение:</label>
+            <input type="text" class="input" id="master-address" placeholder="ул. Ленина, 10">
+            
+            <label class="label">Telegram username:</label>
+            <input type="text" class="input" id="master-telegram" placeholder="@username">
+            
+            <label class="label">WhatsApp (необязательно):</label>
+            <input type="text" class="input" id="master-whatsapp" placeholder="+7 (999) 123-45-67">
+            
+            <label class="label">Viber (необязательно):</label>
+            <input type="text" class="input" id="master-viber" placeholder="+7 (999) 123-45-67">
+            
+            <label class="label">Описание:</label>
+            <textarea class="input" id="master-desc" rows="3" placeholder="Опишите ваш опыт и услуги"></textarea>
+            
+            <button class="button" onclick="submitMasterRequest()">✅ Отправить заявку</button>
+            <button class="button secondary" onclick="hideMasterForm()">❌ Отмена</button>
+        </div>
+    </div>
+    
+    <!-- Модальное окно: Отзыв -->
+    <div class="modal" id="feedback-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📝 Оставить отзыв</h3>
+                <span class="modal-close" onclick="hideFeedbackForm()">&times;</span>
+            </div>
+            
+            <label class="label">Тип отзыва:</label>
+            <select class="input" id="feedback-type">
+                <option value="idea">💡 Идея/Предложение</option>
+                <option value="bug">🐛 Ошибка/Проблема</option>
+                <option value="praise">👍 Похвала</option>
+                <option value="complaint">😠 Жалоба</option>
+                <option value="other">❓ Другое</option>
+            </select>
+            
+            <label class="label">Ваша оценка:</label>
+            <div style="display: flex; gap: 10px; margin-bottom: 15px; justify-content: center;">
+                <span class="rating-star" onclick="setRating(1)" style="font-size: 30px; cursor: pointer; opacity: 0.3;">⭐</span>
+                <span class="rating-star" onclick="setRating(2)" style="font-size: 30px; cursor: pointer; opacity: 0.3;">⭐</span>
+                <span class="rating-star" onclick="setRating(3)" style="font-size: 30px; cursor: pointer; opacity: 0.3;">⭐</span>
+                <span class="rating-star" onclick="setRating(4)" style="font-size: 30px; cursor: pointer; opacity: 0.3;">⭐</span>
+                <span class="rating-star" onclick="setRating(5)" style="font-size: 30px; cursor: pointer;">⭐</span>
+            </div>
+            <input type="hidden" id="feedback-rating" value="5">
+            
+            <label class="label">Ваш отзыв:</label>
+            <textarea class="input" id="feedback-text" rows="4" placeholder="Напишите что вы думаете о проекте..."></textarea>
+            
+            <label class="checkbox" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <input type="checkbox" id="feedback-contact" checked>
+                <span>Разрешить связаться со мной для уточнения</span>
+            </label>
+            
+            <button class="button" onclick="submitFeedback()">✅ Отправить</button>
+            <button class="button secondary" onclick="hideFeedbackForm()">❌ Отмена</button>
+        </div>
+    </div>
+    
+    <!-- Модальное окно: Создание запроса в чате -->
+    <div class="modal" id="chat-request-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>➕ Создать запрос</h3>
+                <span class="modal-close" onclick="hideChatRequestForm()">&times;</span>
+            </div>
+            
+            <label class="label">Заголовок:</label>
+            <input type="text" class="input" id="chat-title" placeholder="Например: Нужен прикурить">
+            
+            <label class="label">Описание:</label>
+            <textarea class="input" id="chat-description" rows="3" placeholder="Подробно опишите что нужно"></textarea>
+            
+            <label class="label">Адрес:</label>
+            <input type="text" class="input" id="chat-address" placeholder="ул. Ленина, 10">
+            
+            <label class="checkbox" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <input type="checkbox" id="chat-use-location" checked>
+                <span>Использовать моё местоположение</span>
+            </label>
+            
+            <button class="button" onclick="createChatRequest()">✅ Создать</button>
+            <button class="button secondary" onclick="hideChatRequestForm()">❌ Отмена</button>
+        </div>
+    </div>
+    
+    <!-- Модальное окно: Рассылка (для админа) -->
+    <div class="modal" id="broadcast-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📢 Рассылка</h3>
+                <span class="modal-close" onclick="hideBroadcastForm()">&times;</span>
+            </div>
+            
+            <label class="label">Текст сообщения:</label>
+            <textarea class="input" id="broadcast-text" rows="5" placeholder="Введите текст для рассылки..."></textarea>
+            
+            <button class="button" onclick="sendBroadcast()">📢 Отправить всем</button>
+            <button class="button secondary" onclick="hideBroadcastForm()">❌ Отмена</button>
+        </div>
+    </div>
+    
+    <!-- Модальное окно: Премиум подписка -->
+    <div class="modal" id="subscription-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>💎 Премиум подписка</h3>
+                <span class="modal-close" onclick="hideSubscriptionForm()">&times;</span>
+            </div>
+            
+            <div class="subscription-card" onclick="selectSubscriptionPlan(1)">
+                <div style="display: flex; justify-content: space-between;">
+                    <span class="card-title">1 район</span>
+                    <span class="subscription-price">30 ⭐️</span>
+                </div>
+                <p>Уведомления о событиях в одном районе</p>
+            </div>
+            
+            <div class="subscription-card" onclick="selectSubscriptionPlan(2)">
+                <div style="display: flex; justify-content: space-between;">
+                    <span class="card-title">2 района</span>
+                    <span class="subscription-price">55 ⭐️</span>
+                </div>
+                <p>Уведомления в двух районах</p>
+            </div>
+            
+            <div class="subscription-card" onclick="selectSubscriptionPlan(3)">
+                <div style="display: flex; justify-content: space-between;">
+                    <span class="card-title">3 района</span>
+                    <span class="subscription-price">80 ⭐️</span>
+                </div>
+                <p>Уведомления в трёх районах</p>
+            </div>
+            
+            <div class="subscription-card" onclick="selectSubscriptionPlan(9)">
+                <div style="display: flex; justify-content: space-between;">
+                    <span class="card-title">Все районы</span>
+                    <span class="subscription-price">170 ⭐️</span>
+                </div>
+                <p>Уведомления во всех районах Волгограда</p>
+            </div>
+            
+            <div id="subscription-districts" style="display: none;">
+                <h4 style="margin: 15px 0 10px 0;">Выберите районы:</h4>
+                <div class="districts-grid" id="subscription-districts-list">
+                    <!-- Районы для выбора -->
+                </div>
+                <button class="button" onclick="purchaseSubscription()">💳 Оплатить Stars</button>
+            </div>
+            
+            <button class="button secondary" onclick="hideSubscriptionForm()">Закрыть</button>
+        </div>
+    </div>
+    
+    <!-- Модальное окно: Подача жалобы -->
+    <div class="modal" id="complaint-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>⚠️ Подать жалобу</h3>
+                <span class="modal-close" onclick="hideComplaintForm()">&times;</span>
+            </div>
+            
+            <label class="label">Тип жалобы:</label>
+            <select class="input" id="complaint-type">
+                <option value="master">На мастера</option>
+                <option value="user">На пользователя</option>
+                <option value="event">На событие</option>
+            </select>
+            
+            <label class="label">ID нарушителя:</label>
+            <input type="text" class="input" id="complaint-target" placeholder="Введите ID">
+            
+            <label class="label">Причина жалобы:</label>
+            <textarea class="input" id="complaint-reason" rows="4" placeholder="Опишите нарушение..."></textarea>
+            
+            <button class="button" onclick="submitComplaint()">✅ Отправить</button>
+            <button class="button secondary" onclick="hideComplaintForm()">❌ Отмена</button>
+        </div>
+    </div>
+    
+    <!-- Модальное окно: Редактирование мастера -->
+    <div class="modal" id="master-edit-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>✏️ Редактирование</h3>
+                <span class="modal-close" onclick="hideMasterEditForm()">&times;</span>
+            </div>
+            
+            <label class="label">Выберите поле:</label>
+            <select class="input" id="edit-field">
+                <option value="phone">📞 Телефон</option>
+                <option value="phone2">📞 Доп. телефон</option>
+                <option value="email">📧 Email</option>
+                <option value="company">🏢 Компания</option>
+                <option value="services">📋 Услуги</option>
+                <option value="address">📍 Адрес</option>
+                <option value="description">📝 Описание</option>
+                <option value="telegram">📱 Telegram</option>
+                <option value="whatsapp">📱 WhatsApp</option>
+            </select>
+            
+            <label class="label">Новое значение:</label>
+            <input type="text" class="input" id="edit-value" placeholder="Введите новое значение">
+            
+            <button class="button" onclick="submitMasterEdit()">✏️ Отправить на модерацию</button>
+            <button class="button secondary" onclick="hideMasterEditForm()">❌ Отмена</button>
+        </div>
+    </div>
+    
+    <!-- Модальное окно: Заявка на статус (для админа) -->
+    <div class="modal" id="status-request-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📝 Создать заявку на статус</h3>
+                <span class="modal-close" onclick="hideStatusRequestForm()">&times;</span>
+            </div>
+            
+            <label class="label">Тип пользователя:</label>
+            <select class="input" id="status-user-type">
+                <option value="master">🔧 Мастер</option>
+                <option value="user">👤 Пользователь</option>
+            </select>
+            
+            <label class="label">ID пользователя:</label>
+            <input type="text" class="input" id="status-user-id" placeholder="Telegram ID">
+            
+            <label class="label">Запрашиваемый статус:</label>
+            <select class="input" id="status-target">
+                <option value="Профессионал">🔧 Профессионал</option>
+                <option value="Премиум">👑 Премиум</option>
+                <option value="Активный">🔥 Активный</option>
+                <option value="VIP">💎 VIP</option>
+            </select>
+            
+            <label class="label">Способ получения:</label>
+            <select class="input" id="status-method">
+                <option value="money">💰 Оплата</option>
+                <option value="orders">📊 По заказам</option>
+            </select>
+            
+            <button class="button" onclick="createStatusRequest()">✅ Создать заявку</button>
+            <button class="button secondary" onclick="hideStatusRequestForm()">❌ Отмена</button>
+        </div>
+    </div>
+    
+    <!-- Нижняя навигация -->
+    <div class="bottom-nav" id="bottom-nav">
         <div class="nav-item active" onclick="showSection('map')">
             <i>📍</i>
             <span>Карта</span>
@@ -466,15 +1166,25 @@
         tg.expand();
         tg.ready();
         
-        // ========== ВАШ АДРЕС API ==========
+        // ========== КОНФИГУРАЦИЯ ==========
+        const ADMIN_IDS = [6808045467]; // ID администраторов
         const API_URL = 'https://eb6b55ab90e96a1f-88-87-68-112.serveousercontent.com/api';
-        // ===================================
         
+        // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
         let map;
         let userLocation = null;
         let currentUser = null;
+        let currentRating = 5;
+        let selectedService = '';
+        let allMasters = [];
+        let allEvents = [];
+        let allDistricts = [];
+        let placemarks = [];
+        let currentChatRequest = null;
+        let selectedPlan = null;
+        let selectedDistricts = [];
         
-        // Инициализация
+        // ========== ИНИЦИАЛИЗАЦИЯ ==========
         document.addEventListener('DOMContentLoaded', function() {
             initMap();
             loadDistricts();
@@ -482,27 +1192,86 @@
             loadEvents();
             loadMasters();
             loadChatRequests();
+            loadFeedback();
+            loadMySubscriptions();
+            
+            // Проверяем, является ли пользователь админом
+            if (isAdmin()) {
+                // Добавляем пункт в меню
+                const menu = document.getElementById('main-menu');
+                const adminItem = document.createElement('div');
+                adminItem.className = 'menu-item admin';
+                adminItem.innerHTML = '👑 Админ';
+                adminItem.onclick = () => showSection('admin');
+                menu.appendChild(adminItem);
+                
+                // Добавляем в нижнюю навигацию
+                const nav = document.getElementById('bottom-nav');
+                const navItem = document.createElement('div');
+                navItem.className = 'nav-item';
+                navItem.innerHTML = '<i>👑</i><span>Админ</span>';
+                navItem.onclick = () => showSection('admin');
+                nav.appendChild(navItem);
+                
+                // Загружаем админ статистику
+                loadAdminStats();
+            }
         });
         
-        // Переключение разделов
+        // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
+        function isAdmin() {
+            const userId = tg.initDataUnsafe?.user?.id;
+            return ADMIN_IDS.includes(userId);
+        }
+        
         function showSection(section) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             
             document.getElementById(section + '-section').classList.add('active');
-            event.target.classList.add('active');
             
-            // Обновляем нижнее меню
+            // Активируем соответствующий пункт меню
+            document.querySelectorAll('.menu-item').forEach(item => {
+                if (item.innerHTML.includes(getSectionEmoji(section))) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // Активируем соответствующий пункт нижней навигации
             document.querySelectorAll('.nav-item').forEach((item, index) => {
-                if (index === ['map','help','sos','service','profile'].indexOf(section)) {
+                const sections = ['map', 'help', 'sos', 'service', 'profile', 'admin'];
+                if (sections[index] === section) {
                     item.classList.add('active');
                 }
             });
             
             if (section === 'map') {
-                setTimeout(() => map.container.fitToViewport(), 100);
+                setTimeout(() => {
+                    if (map) map.container.fitToViewport();
+                }, 100);
+            } else if (section === 'feedback') {
+                loadFeedback();
+            } else if (section === 'chat') {
+                loadChatRequests();
+            } else if (section === 'subscriptions') {
+                loadMySubscriptions();
             }
+        }
+        
+        function getSectionEmoji(section) {
+            const emojis = {
+                'map': '📍',
+                'help': '🆘',
+                'sos': '🚨',
+                'service': '🔧',
+                'chat': '💬',
+                'subscriptions': '🔔',
+                'feedback': '📝',
+                'profile': '👤',
+                'admin': '👑'
+            };
+            return emojis[section] || '';
         }
         
         // ========== КАРТА ==========
@@ -511,18 +1280,24 @@
                 map = new ymaps.Map("map", {
                     center: [48.707067, 44.516975],
                     zoom: 12,
-                    controls: ['zoomControl']
+                    controls: ['zoomControl', 'fullscreenControl']
                 });
                 
+                // Получаем местоположение пользователя
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(
                         (pos) => {
                             userLocation = [pos.coords.latitude, pos.coords.longitude];
-                            placemarks.push(new ymaps.Placemark(userLocation, {}, {
-                                preset: 'islands#blueCircleIcon'
-                            }));
+                            // Добавляем метку пользователя
+                            const userPlacemark = new ymaps.Placemark(userLocation, {
+                                hintContent: 'Вы здесь'
+                            }, {
+                                preset: 'islands#blueCircleIcon',
+                                draggable: false
+                            });
+                            map.geoObjects.add(userPlacemark);
                         },
-                        (err) => console.log(err)
+                        (err) => console.log("Геолокация не доступна:", err)
                     );
                 }
             });
@@ -536,7 +1311,7 @@
             }
         }
         
-        // Загрузка районов
+        // ========== РАЙОНЫ ==========
         function loadDistricts() {
             fetch(`${API_URL}/get_districts`, {
                 method: 'POST',
@@ -545,101 +1320,209 @@
             })
             .then(res => res.json())
             .then(data => {
-                if (data.success) {
-                    const districtsHtml = data.districts.map(d => `
-                        <div class="district-item ${d.danger_color === '🟢' ? 'green' : d.danger_color === '🟡' ? 'yellow' : 'red'}" 
-                             onclick="showDistrict('${d.name}')">
-                            <b>${d.name}</b><br>
-                            <small>${d.events_count} событий</small>
-                        </div>
-                    `).join('');
+                if (data.success && data.districts) {
+                    allDistricts = data.districts;
+                    
+                    const districtsHtml = data.districts.map(d => {
+                        let colorClass = 'green';
+                        if (d.danger_color === '🟡') colorClass = 'yellow';
+                        if (d.danger_color === '🔴') colorClass = 'red';
+                        
+                        return `
+                            <div class="district-item ${colorClass}" onclick="showDistrictEvents(${d.id}, '${d.name}')">
+                                <b>${d.name}</b>
+                                <div style="font-size: 10px; color: #666;">${d.events_count} соб.</div>
+                            </div>
+                        `;
+                    }).join('');
                     document.getElementById('districts-list').innerHTML = districtsHtml;
                     
                     // Заполняем select в форме
                     const districtSelect = document.getElementById('event-district');
-                    districtSelect.innerHTML = data.districts.map(d => 
-                        `<option value="${d.id}">${d.name}</option>`
-                    ).join('');
+                    if (districtSelect) {
+                        districtSelect.innerHTML = '<option value="">Выберите район</option>' + 
+                            data.districts.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+                    }
+                    
+                    const masterDistrict = document.getElementById('master-district');
+                    if (masterDistrict) {
+                        masterDistrict.innerHTML = '<option value="">Выберите район</option>' + 
+                            data.districts.map(d => `<option value="${d.name}">${d.name}</option>`).join('');
+                    }
+                    
+                    const districtFilter = document.getElementById('district-select');
+                    if (districtFilter) {
+                        districtFilter.innerHTML = '<option value="">Все районы</option>' + 
+                            data.districts.map(d => `<option value="${d.name}">${d.name}</option>`).join('');
+                    }
+                    
+                    const subscriptionDistricts = document.getElementById('subscription-districts-list');
+                    if (subscriptionDistricts) {
+                        subscriptionDistricts.innerHTML = data.districts.map(d => `
+                            <div class="district-item" onclick="toggleDistrict(${d.id})" id="district-${d.id}">
+                                ${d.name}
+                            </div>
+                        `).join('');
+                    }
                 }
-            });
+            })
+            .catch(err => console.error('Ошибка загрузки районов:', err));
         }
         
-        // Загрузка событий
-        function loadEvents() {
+        function showDistrictEvents(districtId, districtName) {
+            showSection('map');
+            loadEvents(districtId);
+            tg.showAlert(`Район: ${districtName}`);
+        }
+        
+        // ========== СОБЫТИЯ ==========
+        function loadEvents(districtId = null) {
             fetch(`${API_URL}/get_events`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({user_id: tg.initDataUnsafe?.user?.id})
+                body: JSON.stringify({
+                    user_id: tg.initDataUnsafe?.user?.id,
+                    district_id: districtId
+                })
             })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    // Очищаем карту
-                    map.geoObjects.removeAll();
+                    allEvents = data.events || [];
                     
-                    // Добавляем метки
-                    data.events.forEach(event => {
-                        const placemark = new ymaps.Placemark(
-                            [event.lat, event.lon],
-                            {
-                                balloonContent: event.type,
-                                hintContent: event.type
-                            },
-                            {preset: getIcon(event.type)}
-                        );
-                        placemark.events.add('click', () => showEventPopup(event));
-                        map.geoObjects.add(placemark);
-                    });
+                    // Очищаем карту от старых меток
+                    if (map) {
+                        placemarks.forEach(p => map.geoObjects.remove(p));
+                        placemarks = [];
+                        
+                        // Добавляем новые метки
+                        allEvents.forEach(event => {
+                            let iconPreset = 'islands#blueIcon';
+                            if (event.type.includes('ДПС')) iconPreset = 'islands#redIcon';
+                            else if (event.type.includes('ДТП')) iconPreset = 'islands#orangeIcon';
+                            else if (event.type.includes('яма')) iconPreset = 'islands#brownIcon';
+                            else if (event.type.includes('перекрытие')) iconPreset = 'islands#yellowIcon';
+                            
+                            const placemark = new ymaps.Placemark(
+                                [event.lat, event.lon],
+                                {
+                                    hintContent: event.type,
+                                    balloonContent: event.comment || event.type
+                                },
+                                { preset: iconPreset }
+                            );
+                            
+                            placemark.events.add('click', () => showEventDetails(event));
+                            map.geoObjects.add(placemark);
+                            placemarks.push(placemark);
+                        });
+                    }
                     
-                    // Показываем список событий
-                    const eventsHtml = data.events.map(e => `
-                        <div class="card" onclick="showEventPopup(${JSON.stringify(e).replace(/"/g, '&quot;')})">
-                            <div class="card-title">${e.type}</div>
-                            <div>📍 ${e.comment || 'без описания'}</div>
-                            <div>👤 @${e.author} ⭐${e.author_rating}</div>
-                            <div>🕐 ${new Date(e.time).toLocaleString()}</div>
-                        </div>
-                    `).join('');
-                    document.getElementById('events-list').innerHTML = eventsHtml || '<p>Нет событий за последние 24 часа</p>';
+                    // Отображаем список событий
+                    const eventsList = document.getElementById('events-list');
+                    if (allEvents.length === 0) {
+                        eventsList.innerHTML = '<p style="text-align: center; color: #666;">Нет событий за последние 24 часа</p>';
+                    } else {
+                        eventsList.innerHTML = allEvents.map(e => {
+                            let typeClass = 'event-item';
+                            if (e.type.includes('ДПС')) typeClass += ' dps';
+                            else if (e.type.includes('ДТП')) typeClass += ' dtp';
+                            else if (e.type.includes('яма')) typeClass += ' yama';
+                            else if (e.type.includes('перекрытие')) typeClass += ' closure';
+                            
+                            const time = new Date(e.time).toLocaleString('ru-RU', {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            });
+                            
+                            return `
+                                <div class="${typeClass}" onclick="showEventDetails(${JSON.stringify(e).replace(/"/g, '&quot;')})">
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <b>${e.type}</b>
+                                        <span style="color: #666;">${time}</span>
+                                    </div>
+                                    <div style="font-size: 13px; margin: 5px 0;">${e.comment || 'без описания'}</div>
+                                    <div style="display: flex; gap: 10px; font-size: 12px; color: #666;">
+                                        <span>👤 @${e.author}</span>
+                                        <span>👍 ${e.confirmations}</span>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+                    }
+                }
+            })
+            .catch(err => console.error('Ошибка загрузки событий:', err));
+        }
+        
+        function showEventDetails(event) {
+            const time = new Date(event.time).toLocaleString('ru-RU');
+            tg.showPopup({
+                title: event.type,
+                message: `📍 ${event.comment || 'без описания'}\n👤 От: @${event.author}\n🕐 ${time}\n👍 Подтверждения: ${event.confirmations}\n👎 Жалобы: ${event.fake_reports || 0}`,
+                buttons: [
+                    {id: 'confirm', type: 'default', text: '👍 Подтвердить'},
+                    {id: 'fake', type: 'destructive', text: '👎 Это фейк'},
+                    {id: 'complaint', type: 'destructive', text: '⚠️ Пожаловаться'},
+                    {type: 'cancel', text: 'Закрыть'}
+                ]
+            }, (btnId) => {
+                if (btnId === 'confirm' || btnId === 'fake') {
+                    voteForEvent(event.id, btnId);
+                } else if (btnId === 'complaint') {
+                    showComplaintForm('event', event.id);
                 }
             });
         }
         
-        function getIcon(type) {
-            if (type.includes('ДПС')) return 'islands#redIcon';
-            if (type.includes('ДТП')) return 'islands#orangeIcon';
-            if (type.includes('яма')) return 'islands#brownIcon';
-            if (type.includes('перекрытие')) return 'islands#yellowIcon';
-            return 'islands#blueIcon';
-        }
-        
-        function showEventPopup(event) {
-            const time = new Date(event.time).toLocaleString();
-            tg.showPopup({
-                title: event.type,
-                message: `📍 ${event.comment || 'без описания'}\n👤 От: @${event.author}\n🕐 ${time}\n👍 Подтверждения: ${event.confirmations}`,
-                buttons: [{type: 'close'}]
+        function voteForEvent(eventId, voteType) {
+            fetch(`${API_URL}/vote_event`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    event_id: eventId,
+                    user_id: tg.initDataUnsafe?.user?.id,
+                    vote_type: voteType
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    tg.showAlert('✅ Голос учтён!');
+                    loadEvents();
+                }
             });
         }
         
-        // Форма добавления события
+        // ========== ФОРМА ДОБАВЛЕНИЯ СОБЫТИЯ ==========
         function showEventForm() {
-            document.getElementById('event-form').style.display = 'block';
+            document.getElementById('event-modal').classList.add('show');
         }
         
         function hideEventForm() {
-            document.getElementById('event-form').style.display = 'none';
+            document.getElementById('event-modal').classList.remove('show');
         }
         
         function submitEvent() {
+            if (!userLocation) {
+                tg.showAlert('❌ Не удалось определить ваше местоположение');
+                return;
+            }
+            
             const eventData = {
                 type: document.getElementById('event-type').value,
                 district_id: document.getElementById('event-district').value,
                 comment: document.getElementById('event-comment').value,
-                lat: userLocation ? userLocation[0] : 48.707067,
-                lon: userLocation ? userLocation[1] : 44.516975,
-                user_id: tg.initDataUnsafe?.user?.id
+                lat: userLocation[0],
+                lon: userLocation[1],
+                user_id: tg.initDataUnsafe?.user?.id,
+                username: tg.initDataUnsafe?.user?.username
             };
+            
+            if (!eventData.district_id) {
+                tg.showAlert('❌ Выберите район');
+                return;
+            }
             
             fetch(`${API_URL}/add_event`, {
                 method: 'POST',
@@ -649,45 +1532,82 @@
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    tg.showAlert('✅ Событие добавлено!');
+                    tg.showAlert('✅ Событие добавлено! Спасибо за помощь водителям.');
                     hideEventForm();
                     loadEvents();
+                    
+                    // Очищаем форму
+                    document.getElementById('event-type').value = '🚔 ДПС / пост';
+                    document.getElementById('event-district').value = '';
+                    document.getElementById('event-comment').value = '';
+                } else {
+                    tg.showAlert('❌ Ошибка: ' + (data.error || 'Неизвестная ошибка'));
                 }
+            })
+            .catch(err => {
+                console.error(err);
+                tg.showAlert('❌ Ошибка соединения с сервером');
             });
         }
         
         // ========== ПОМОЩЬ НА ДОРОГЕ ==========
-        let selectedService = '';
-        
         function selectService(service) {
             selectedService = service;
+            
+            // Подсвечиваем выбранную услугу
+            document.querySelectorAll('.service-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            event.target.closest('.service-item').classList.add('selected');
+            
             document.getElementById('help-form').style.display = 'block';
+            document.getElementById('help-info').style.display = 'none';
         }
         
         function hideHelpForm() {
             document.getElementById('help-form').style.display = 'none';
+            document.getElementById('help-info').style.display = 'block';
+            selectedService = '';
         }
         
         function createHelpRequest() {
-            const request = {
+            const phone = document.getElementById('help-phone').value;
+            const address = document.getElementById('help-address').value;
+            const description = document.getElementById('help-desc').value;
+            
+            if (!phone || phone.length < 10) {
+                tg.showAlert('❌ Введите корректный номер телефона');
+                return;
+            }
+            
+            const requestData = {
                 service: selectedService,
-                phone: document.getElementById('help-phone').value,
-                description: document.getElementById('help-desc').value,
+                phone: phone,
+                address: address,
+                description: description,
                 lat: userLocation ? userLocation[0] : null,
                 lon: userLocation ? userLocation[1] : null,
-                user_id: tg.initDataUnsafe?.user?.id
+                user_id: tg.initDataUnsafe?.user?.id,
+                username: tg.initDataUnsafe?.user?.username
             };
             
-            fetch(`${API_URL}/create_help_request`, {
+            fetch(`${API_URL}/create_order`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(request)
+                body: JSON.stringify(requestData)
             })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    tg.showAlert('✅ Заявка отправлена! Скоро с вами свяжутся.');
+                    tg.showAlert('✅ Заявка отправлена! Мастер свяжется с вами в ближайшее время.');
                     hideHelpForm();
+                    
+                    // Очищаем форму
+                    document.getElementById('help-phone').value = '+7';
+                    document.getElementById('help-address').value = '';
+                    document.getElementById('help-desc').value = '';
+                } else {
+                    tg.showAlert('❌ Ошибка: ' + (data.error || 'Неизвестная ошибка'));
                 }
             });
         }
@@ -699,8 +1619,13 @@
         
         function sendSOSLocation() {
             if (userLocation) {
-                const message = `🚨 SOS! Мне нужна помощь!\n📍 Местоположение: https://maps.google.com/?q=${userLocation[0]},${userLocation[1]}`;
+                const mapsLink = `https://maps.google.com/?q=${userLocation[0]},${userLocation[1]}`;
+                const message = `🚨 SOS! Мне нужна помощь!\n📍 Местоположение: ${mapsLink}`;
+                
                 tg.sendData(message);
+                tg.showAlert('📍 Координаты отправлены');
+            } else {
+                tg.showAlert('❌ Не удалось определить местоположение');
             }
         }
         
@@ -716,33 +1641,76 @@
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    const mastersHtml = data.masters.map(m => `
-                        <div class="card">
-                            <div class="card-title">${m.name} ${m.status === 'Премиум' ? '👑' : m.status === 'Профессионал' ? '🔧' : '👤'}</div>
-                            <div class="rating">${'⭐'.repeat(Math.round(m.rating))} (${m.rating})</div>
-                            <div>📞 ${m.phone}</div>
-                            <div>📋 ${m.services}</div>
-                            <div>📍 ${m.address}</div>
-                            <button class="button secondary" style="margin-top: 10px;" onclick="contactMaster('${m.id}')">
-                                📩 Связаться
-                            </button>
-                        </div>
-                    `).join('');
-                    document.getElementById('masters-list').innerHTML = mastersHtml || '<p>Нет мастеров в выбранном районе</p>';
+                    allMasters = data.masters || [];
+                    displayMasters(allMasters);
                 }
-            });
+            })
+            .catch(err => console.error('Ошибка загрузки мастеров:', err));
         }
         
-        function contactMaster(masterId) {
-            fetch(`${API_URL}/get_master_contact/${masterId}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.telegram) {
-                        tg.openTelegramLink(`https://t.me/${data.telegram}`);
-                    } else if (data.phone) {
-                        tg.openTelegramLink(`tel:${data.phone}`);
-                    }
-                });
+        function displayMasters(masters) {
+            const mastersList = document.getElementById('masters-list');
+            
+            if (masters.length === 0) {
+                mastersList.innerHTML = '<p style="text-align: center; color: #666;">Нет мастеров в выбранном районе</p>';
+                return;
+            }
+            
+            mastersList.innerHTML = masters.map(m => {
+                const statusEmoji = m.status === 'Премиум' ? '👑' : m.status === 'Профессионал' ? '🔧' : '👤';
+                const onlineStatus = m.is_online ? '🟢 На линии' : '⚫ Не на линии';
+                const stars = '⭐'.repeat(Math.min(5, Math.round(m.rating)));
+                
+                return `
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between;">
+                            <div class="card-title">${statusEmoji} ${m.name || 'Мастер'}</div>
+                            <span class="badge ${m.is_online ? 'success' : 'warning'}">${onlineStatus}</span>
+                        </div>
+                        <div class="rating">${stars} (${m.rating.toFixed(1)})</div>
+                        <div class="info-row"><span>📞 Телефон:</span> <span>${m.phone || 'не указан'}</span></div>
+                        <div class="info-row"><span>📦 Заказов:</span> <span>${m.orders || 0}</span></div>
+                        <div class="info-row"><span>⭐ Отзывов:</span> <span>${m.reviews || 0}</span></div>
+                        <div class="info-row"><span>📋 Услуги:</span> <span>${m.services || 'не указано'}</span></div>
+                        <div class="info-row"><span>📍 Районы:</span> <span>${m.districts ? m.districts.join(', ') : 'не указано'}</span></div>
+                        <div style="display: flex; gap: 10px; margin-top: 10px;">
+                            <button class="button secondary small" style="flex: 1;" onclick="contactMaster('${m.id}', 'telegram')">📩 Telegram</button>
+                            <button class="button secondary small" style="flex: 1;" onclick="contactMaster('${m.id}', 'phone')">📞 Позвонить</button>
+                        </div>
+                        <button class="button secondary small" style="margin-top: 5px;" onclick="showMasterReviews(${m.id})">⭐ Отзывы</button>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function searchMasters() {
+            const searchText = document.getElementById('master-search').value.toLowerCase();
+            if (!searchText) {
+                displayMasters(allMasters);
+                return;
+            }
+            
+            const filtered = allMasters.filter(m => 
+                (m.services && m.services.toLowerCase().includes(searchText)) ||
+                (m.name && m.name.toLowerCase().includes(searchText)) ||
+                (m.company && m.company.toLowerCase().includes(searchText))
+            );
+            displayMasters(filtered);
+        }
+        
+        function contactMaster(masterId, type) {
+            const master = allMasters.find(m => m.id == masterId);
+            if (!master) return;
+            
+            if (type === 'telegram' && master.telegram) {
+                tg.openTelegramLink(`https://t.me/${master.telegram}`);
+            } else if (master.phone) {
+                tg.openTelegramLink(`tel:${master.phone}`);
+            }
+        }
+        
+        function showMasterReviews(masterId) {
+            tg.showAlert('Функция отзывов будет доступна в следующем обновлении');
         }
         
         // ========== ЧАТ ПОМОЩИ ==========
@@ -750,88 +1718,741 @@
             fetch(`${API_URL}/get_chat_requests`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({})
+                body: JSON.stringify({user_id: tg.initDataUnsafe?.user?.id})
+            })
+            .then(res => res.json())
+            .then(data => {
+                const chatRequests = document.getElementById('chat-requests');
+                
+                if (data.success && data.requests && data.requests.length > 0) {
+                    chatRequests.innerHTML = data.requests.map(r => `
+                        <div class="card" onclick="openChatRequest(${r.id})">
+                            <div style="display: flex; justify-content: space-between;">
+                                <div class="card-title">${r.title}</div>
+                                <span class="badge ${r.status === 'active' ? 'success' : 'warning'}">${r.status}</span>
+                            </div>
+                            <div>${r.description || 'без описания'}</div>
+                            <div style="font-size: 12px; color: #666; margin-top: 5px;">
+                                👤 @${r.author} • 🕐 ${new Date(r.created).toLocaleString()}
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <span class="badge info">${r.offers || 0} откликов</span>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    chatRequests.innerHTML = '<p style="text-align: center; color: #666;">Нет активных запросов</p>';
+                }
+            })
+            .catch(err => console.error('Ошибка загрузки запросов:', err));
+        }
+        
+        function showChatRequestForm() {
+            document.getElementById('chat-request-modal').classList.add('show');
+        }
+        
+        function hideChatRequestForm() {
+            document.getElementById('chat-request-modal').classList.remove('show');
+        }
+        
+        function createChatRequest() {
+            const requestData = {
+                title: document.getElementById('chat-title').value,
+                description: document.getElementById('chat-description').value,
+                address: document.getElementById('chat-address').value,
+                use_location: document.getElementById('chat-use-location').checked,
+                lat: userLocation ? userLocation[0] : null,
+                lon: userLocation ? userLocation[1] : null,
+                user_id: tg.initDataUnsafe?.user?.id,
+                username: tg.initDataUnsafe?.user?.username
+            };
+            
+            if (!requestData.title) {
+                tg.showAlert('❌ Введите заголовок запроса');
+                return;
+            }
+            
+            fetch(`${API_URL}/create_chat_request`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(requestData)
             })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    const requestsHtml = data.requests.map(r => `
-                        <div class="card">
-                            <div class="card-title">${r.title}</div>
-                            <div>${r.description || 'без описания'}</div>
-                            <div>👤 @${r.author}</div>
-                            <button class="button secondary" style="margin-top: 10px;" onclick="offerHelp('${r.id}')">
-                                🤝 Помочь
-                            </button>
+                    tg.showAlert('✅ Запрос создан!');
+                    hideChatRequestForm();
+                    loadChatRequests();
+                    
+                    // Очищаем форму
+                    document.getElementById('chat-title').value = '';
+                    document.getElementById('chat-description').value = '';
+                    document.getElementById('chat-address').value = '';
+                }
+            });
+        }
+        
+        function openChatRequest(requestId) {
+            currentChatRequest = requestId;
+            document.getElementById('chat-requests').style.display = 'none';
+            document.getElementById('chat-messages').style.display = 'block';
+            loadChatMessages(requestId);
+        }
+        
+        function hideChatMessages() {
+            document.getElementById('chat-messages').style.display = 'none';
+            document.getElementById('chat-requests').style.display = 'block';
+            currentChatRequest = null;
+        }
+        
+        function loadChatMessages(requestId) {
+            fetch(`${API_URL}/get_chat_messages/${requestId}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const messagesList = document.getElementById('messages-list');
+                    messagesList.innerHTML = data.messages.map(m => `
+                        <div class="chat-message ${m.from_me ? 'mine' : ''}">
+                            <div class="author">${m.author}</div>
+                            <div>${m.text}</div>
+                            <div style="font-size: 10px; color: #666; margin-top: 5px;">${m.time}</div>
                         </div>
                     `).join('');
-                    document.getElementById('chat-requests').innerHTML = requestsHtml || '<p>Нет активных запросов</p>';
+                    
+                    // Прокручиваем вниз
+                    messagesList.scrollTop = messagesList.scrollHeight;
                 }
             });
         }
         
-        function createChatRequest() {
-            tg.showPopup({
-                title: 'Создание запроса',
-                message: 'Опишите, какая помощь нужна:',
-                buttons: [
-                    {id: 'submit', type: 'default', text: 'Отправить'},
-                    {type: 'cancel'}
-                ]
-            }, (btnId) => {
-                if (btnId === 'submit') {
-                    tg.showAlert('Функция в разработке');
+        function sendChatMessage() {
+            const text = document.getElementById('chat-input-text').value;
+            if (!text || !currentChatRequest) return;
+            
+            fetch(`${API_URL}/send_chat_message`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    request_id: currentChatRequest,
+                    user_id: tg.initDataUnsafe?.user?.id,
+                    text: text
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('chat-input-text').value = '';
+                    loadChatMessages(currentChatRequest);
                 }
             });
         }
         
-        function offerHelp(requestId) {
-            tg.showAlert('Функция в разработке');
+        // ========== ПОДПИСКИ ==========
+        function showFreeSubscription() {
+            tg.showAlert('Управление бесплатными подписками будет доступно в следующем обновлении');
+        }
+        
+        function showPremiumSubscription() {
+            document.getElementById('subscription-modal').classList.add('show');
+        }
+        
+        function hideSubscriptionForm() {
+            document.getElementById('subscription-modal').classList.remove('show');
+            selectedPlan = null;
+            selectedDistricts = [];
+            document.getElementById('subscription-districts').style.display = 'none';
+        }
+        
+        function selectSubscriptionPlan(districts) {
+            selectedPlan = districts;
+            
+            document.querySelectorAll('.subscription-card').forEach(c => c.classList.remove('active'));
+            event.target.closest('.subscription-card').classList.add('active');
+            
+            if (districts > 1 && districts < 9) {
+                document.getElementById('subscription-districts').style.display = 'block';
+            } else {
+                selectedDistricts = [];
+                purchaseSubscription();
+            }
+        }
+        
+        function toggleDistrict(districtId) {
+            const index = selectedDistricts.indexOf(districtId);
+            if (index === -1) {
+                if (selectedDistricts.length < selectedPlan) {
+                    selectedDistricts.push(districtId);
+                    document.getElementById(`district-${districtId}`).style.background = '#e3f2fd';
+                } else {
+                    tg.showAlert(`Максимум ${selectedPlan} районов`);
+                }
+            } else {
+                selectedDistricts.splice(index, 1);
+                document.getElementById(`district-${districtId}`).style.background = 'white';
+            }
+        }
+        
+        function purchaseSubscription() {
+            if (selectedPlan > 1 && selectedPlan < 9 && selectedDistricts.length !== selectedPlan) {
+                tg.showAlert(`Выберите ${selectedPlan} районов`);
+                return;
+            }
+            
+            tg.showAlert('Оплата через Telegram Stars будет доступна в следующем обновлении');
+        }
+        
+        function loadMySubscriptions() {
+            fetch(`${API_URL}/get_my_subscriptions`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({user_id: tg.initDataUnsafe?.user?.id})
+            })
+            .then(res => res.json())
+            .then(data => {
+                const subsList = document.getElementById('my-subscriptions');
+                if (data.success && data.subscriptions && data.subscriptions.length > 0) {
+                    subsList.innerHTML = data.subscriptions.map(s => `
+                        <div class="card ${s.type === 'premium' ? 'active' : ''}">
+                            <div style="display: flex; justify-content: space-between;">
+                                <span class="card-title">${s.type === 'premium' ? '💎 Премиум' : '🆓 Бесплатная'}</span>
+                                <span class="badge ${s.active ? 'success' : 'warning'}">${s.active ? 'Активна' : 'Неактивна'}</span>
+                            </div>
+                            <div>Районы: ${s.districts.join(', ')}</div>
+                            <div style="font-size: 12px; color: #666;">Действует до: ${s.end_date || 'бессрочно'}</div>
+                        </div>
+                    `).join('');
+                } else {
+                    subsList.innerHTML = '<p style="text-align: center; color: #666;">У вас нет активных подписок</p>';
+                }
+            });
+        }
+        
+        // ========== ОТЗЫВЫ ==========
+        function loadFeedback() {
+            fetch(`${API_URL}/get_feedback`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({})
+            })
+            .then(res => res.json())
+            .then(data => {
+                const feedbackList = document.getElementById('feedback-list');
+                if (data.success && data.feedback && data.feedback.length > 0) {
+                    feedbackList.innerHTML = data.feedback.map(f => {
+                        const stars = '⭐'.repeat(f.rating || 5);
+                        return `
+                            <div class="card">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span class="card-title">${f.username || 'Аноним'}</span>
+                                    <span class="rating">${stars}</span>
+                                </div>
+                                <div>${f.message}</div>
+                                <div style="font-size: 12px; color: #666; margin-top: 5px;">
+                                    🕐 ${new Date(f.created).toLocaleString()}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    feedbackList.innerHTML = '<p style="text-align: center; color: #666;">Пока нет отзывов</p>';
+                }
+            });
+        }
+        
+        function showFeedbackForm() {
+            document.getElementById('feedback-modal').classList.add('show');
+        }
+        
+        function hideFeedbackForm() {
+            document.getElementById('feedback-modal').classList.remove('show');
+        }
+        
+        function setRating(rating) {
+            currentRating = rating;
+            document.querySelectorAll('.rating-star').forEach((star, index) => {
+                star.style.opacity = index < rating ? '1' : '0.3';
+            });
+            document.getElementById('feedback-rating').value = rating;
+        }
+        
+        function submitFeedback() {
+            const feedbackData = {
+                type: document.getElementById('feedback-type').value,
+                rating: currentRating,
+                message: document.getElementById('feedback-text').value,
+                contact_allowed: document.getElementById('feedback-contact').checked,
+                user_id: tg.initDataUnsafe?.user?.id,
+                username: tg.initDataUnsafe?.user?.username
+            };
+            
+            if (!feedbackData.message) {
+                tg.showAlert('❌ Напишите текст отзыва');
+                return;
+            }
+            
+            fetch(`${API_URL}/add_feedback`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(feedbackData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    tg.showAlert('✅ Спасибо за отзыв!');
+                    hideFeedbackForm();
+                    loadFeedback();
+                    
+                    // Очищаем форму
+                    document.getElementById('feedback-type').value = 'idea';
+                    document.getElementById('feedback-text').value = '';
+                    setRating(5);
+                }
+            });
         }
         
         // ========== ПРОФИЛЬ ==========
         function loadUserProfile() {
             const user = tg.initDataUnsafe?.user;
-            if (user) {
-                document.getElementById('profile-info').innerHTML = `
-                    <div><b>ID:</b> ${user.id}</div>
-                    <div><b>Имя:</b> ${user.first_name} ${user.last_name || ''}</div>
-                    <div><b>Username:</b> @${user.username || 'нет'}</div>
-                    <div><b>Рейтинг:</b> ⭐ 0</div>
-                `;
-            }
+            if (!user) return;
+            
+            fetch(`${API_URL}/get_user_profile`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({user_id: user.id})
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    currentUser = data.user;
+                    
+                    let profileHtml = `
+                        <div><b>ID:</b> ${data.user.id}</div>
+                        <div><b>Имя:</b> ${data.user.first_name || ''} ${data.user.last_name || ''}</div>
+                        <div><b>Username:</b> @${data.user.username || 'нет'}</div>
+                        <div><b>Рейтинг:</b> ⭐ ${data.user.rating || 0}</div>
+                        <div><b>Уровень:</b> ${data.user.level || 'Новичок'}</div>
+                        <div><b>Заказов:</b> 📦 ${data.user.total_orders || 0}</div>
+                        <div><b>Жалоб:</b> ⚠️ ${data.user.complaints || 0}</div>
+                    `;
+                    
+                    if (data.master) {
+                        profileHtml += `
+                            <hr style="margin: 10px 0;">
+                            <div><b>Статус мастера:</b> ${data.master.status || 'Новичок'}</div>
+                            <div><b>Рейтинг мастера:</b> ⭐ ${data.master.rating.toFixed(1)}</div>
+                            <div><b>Выполнено заказов:</b> 📦 ${data.master.orders || 0}</div>
+                            <div><b>Проверен:</b> ${data.master.verified ? '✅ Да' : '⏳ Нет'}</div>
+                        `;
+                        
+                        document.getElementById('master-controls').style.display = 'block';
+                        if (data.master.is_online) {
+                            document.getElementById('online-btn').style.display = 'none';
+                            document.getElementById('offline-btn').style.display = 'block';
+                        } else {
+                            document.getElementById('online-btn').style.display = 'block';
+                            document.getElementById('offline-btn').style.display = 'none';
+                        }
+                    }
+                    
+                    document.getElementById('profile-info').innerHTML = profileHtml;
+                }
+            })
+            .catch(err => console.error('Ошибка загрузки профиля:', err));
         }
         
         function showMyOrders() {
-            tg.showAlert('Функция в разработке');
-        }
-        
-        function becomeMaster() {
-            tg.showAlert('Функция в разработке');
-        }
-        
-        function showFeedbackForm() {
-            tg.showPopup({
-                title: 'Отзыв о проекте',
-                message: 'Напишите ваш отзыв:',
-                buttons: [
-                    {id: 'submit', type: 'default', text: 'Отправить'},
-                    {type: 'cancel'}
-                ]
-            }, (btnId) => {
-                if (btnId === 'submit') {
-                    tg.showAlert('Спасибо за отзыв!');
+            fetch(`${API_URL}/get_user_orders`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({user_id: tg.initDataUnsafe?.user?.id})
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.orders && data.orders.length > 0) {
+                    let ordersText = '📜 Мои заказы:\n\n';
+                    data.orders.forEach(o => {
+                        ordersText += `#${o.id} - ${o.service}\nСтатус: ${o.status}\n📅 ${new Date(o.created).toLocaleString()}\n\n`;
+                    });
+                    tg.showAlert(ordersText);
+                } else {
+                    tg.showAlert('У вас пока нет заказов');
                 }
             });
         }
         
-        function logout() {
-            tg.close();
+        function showBecomeMasterForm() {
+            document.getElementById('master-modal').classList.add('show');
         }
         
-        // Вспомогательные функции
-        function showDistrict(name) {
-            tg.showAlert(`Район ${name}`);
+        function hideMasterForm() {
+            document.getElementById('master-modal').classList.remove('show');
+        }
+        
+        function submitMasterRequest() {
+            const masterData = {
+                phone: document.getElementById('master-phone').value,
+                phone2: document.getElementById('master-phone2').value,
+                email: document.getElementById('master-email').value,
+                company: document.getElementById('master-company').value,
+                company_type: document.getElementById('master-type').value,
+                inn: document.getElementById('master-inn').value,
+                services: document.getElementById('master-services').value,
+                district: document.getElementById('master-district').value,
+                address: document.getElementById('master-address').value,
+                telegram: document.getElementById('master-telegram').value,
+                whatsapp: document.getElementById('master-whatsapp').value,
+                viber: document.getElementById('master-viber').value,
+                description: document.getElementById('master-desc').value,
+                user_id: tg.initDataUnsafe?.user?.id,
+                username: tg.initDataUnsafe?.user?.username
+            };
+            
+            if (!masterData.phone) {
+                tg.showAlert('❌ Введите номер телефона');
+                return;
+            }
+            
+            fetch(`${API_URL}/register_master`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(masterData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    tg.showAlert('✅ Заявка отправлена! Администратор рассмотрит её в ближайшее время.');
+                    hideMasterForm();
+                } else {
+                    tg.showAlert('❌ Ошибка: ' + (data.error || 'Неизвестная ошибка'));
+                }
+            });
+        }
+        
+        function toggleOnline() {
+            fetch(`${API_URL}/toggle_master_online`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({user_id: tg.initDataUnsafe?.user?.id})
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    loadUserProfile();
+                }
+            });
+        }
+        
+        function showMasterStats() {
+            fetch(`${API_URL}/get_master_stats`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({user_id: tg.initDataUnsafe?.user?.id})
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    tg.showAlert(
+                        `📊 Ваша статистика:\n\n` +
+                        `Всего заказов: ${data.stats.total}\n` +
+                        `Выполнено: ${data.stats.completed}\n` +
+                        `Отменено: ${data.stats.cancelled}\n` +
+                        `Рейтинг: ⭐ ${data.stats.rating.toFixed(1)}\n` +
+                        `Отзывов: ${data.stats.reviews}`
+                    );
+                }
+            });
+        }
+        
+        function showMasterEditForm() {
+            document.getElementById('master-edit-modal').classList.add('show');
+        }
+        
+        function hideMasterEditForm() {
+            document.getElementById('master-edit-modal').classList.remove('show');
+        }
+        
+        function submitMasterEdit() {
+            const editData = {
+                field: document.getElementById('edit-field').value,
+                value: document.getElementById('edit-value').value,
+                user_id: tg.initDataUnsafe?.user?.id
+            };
+            
+            if (!editData.value) {
+                tg.showAlert('❌ Введите новое значение');
+                return;
+            }
+            
+            fetch(`${API_URL}/request_master_edit`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(editData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    tg.showAlert('✅ Заявка на изменение отправлена на модерацию');
+                    hideMasterEditForm();
+                }
+            });
+        }
+        
+        // ========== ЖАЛОБЫ ==========
+        function showComplaintForm(type = null, targetId = null) {
+            document.getElementById('complaint-modal').classList.add('show');
+            if (type) {
+                document.getElementById('complaint-type').value = type;
+            }
+            if (targetId) {
+                document.getElementById('complaint-target').value = targetId;
+            }
+        }
+        
+        function hideComplaintForm() {
+            document.getElementById('complaint-modal').classList.remove('show');
+        }
+        
+        function submitComplaint() {
+            const complaintData = {
+                type: document.getElementById('complaint-type').value,
+                target_id: document.getElementById('complaint-target').value,
+                reason: document.getElementById('complaint-reason').value,
+                user_id: tg.initDataUnsafe?.user?.id
+            };
+            
+            if (!complaintData.target_id || !complaintData.reason) {
+                tg.showAlert('❌ Заполните все поля');
+                return;
+            }
+            
+            fetch(`${API_URL}/submit_complaint`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(complaintData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    tg.showAlert('✅ Жалоба отправлена администратору');
+                    hideComplaintForm();
+                    
+                    // Очищаем форму
+                    document.getElementById('complaint-type').value = 'master';
+                    document.getElementById('complaint-target').value = '';
+                    document.getElementById('complaint-reason').value = '';
+                }
+            });
+        }
+        
+        // ========== АДМИН ПАНЕЛЬ ==========
+        function loadAdminStats() {
+            fetch(`${API_URL}/admin/stats`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({admin_id: tg.initDataUnsafe?.user?.id})
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('stat-users').textContent = data.stats.users || 0;
+                    document.getElementById('stat-masters').textContent = data.stats.masters || 0;
+                    document.getElementById('stat-orders').textContent = data.stats.orders || 0;
+                    document.getElementById('stat-events').textContent = data.stats.events || 0;
+                    document.getElementById('stat-feedback').textContent = data.stats.feedback || 0;
+                    document.getElementById('stat-complaints').textContent = data.stats.complaints || 0;
+                }
+            });
+        }
+        
+        function loadPendingMasters() {
+            fetch(`${API_URL}/admin/pending_masters`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({admin_id: tg.initDataUnsafe?.user?.id})
+            })
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById('pending-masters-list');
+                if (data.success && data.masters && data.masters.length > 0) {
+                    list.innerHTML = data.masters.map(m => `
+                        <div class="card">
+                            <div><b>${m.username || 'Нет username'}</b></div>
+                            <div>📞 ${m.phone}</div>
+                            <div>🏢 ${m.company || 'Частный мастер'}</div>
+                            <div>📋 ${m.services || 'Не указано'}</div>
+                            <div>📍 ${m.districts ? m.districts.join(', ') : 'Не указано'}</div>
+                            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                <button class="button small" style="flex: 1;" onclick="verifyMaster(${m.id})">✅ Подтвердить</button>
+                                <button class="button danger small" style="flex: 1;" onclick="rejectMaster(${m.id})">❌ Отклонить</button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    list.innerHTML = '<p style="text-align: center; color: #666;">Нет неподтверждённых мастеров</p>';
+                }
+            });
+        }
+        
+        function verifyMaster(masterId) {
+            fetch(`${API_URL}/admin/verify_master`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    admin_id: tg.initDataUnsafe?.user?.id,
+                    master_id: masterId
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    tg.showAlert('✅ Мастер подтверждён');
+                    loadPendingMasters();
+                }
+            });
+        }
+        
+        function rejectMaster(masterId) {
+            fetch(`${API_URL}/admin/reject_master`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    admin_id: tg.initDataUnsafe?.user?.id,
+                    master_id: masterId
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    tg.showAlert('❌ Мастер отклонён');
+                    loadPendingMasters();
+                }
+            });
+        }
+        
+        function loadPendingStatus() {
+            fetch(`${API_URL}/admin/pending_status`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({admin_id: tg.initDataUnsafe?.user?.id})
+            })
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById('pending-status-list');
+                if (data.success && data.requests && data.requests.length > 0) {
+                    list.innerHTML = data.requests.map(r => `
+                        <div class="card">
+                            <div><b>${r.username}</b> хочет статус ${r.requested_status}</div>
+                            <div>Текущий статус: ${r.current_status}</div>
+                            <div>Способ: ${r.method}</div>
+                            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                <button class="button small" style="flex: 1;" onclick="approveStatus(${r.id})">✅ Одобрить</button>
+                                <button class="button danger small" style="flex: 1;" onclick="rejectStatus(${r.id})">❌ Отклонить</button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    list.innerHTML = '<p style="text-align: center; color: #666;">Нет заявок на статус</p>';
+                }
+            });
+        }
+        
+        function loadComplaints() {
+            fetch(`${API_URL}/admin/complaints`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({admin_id: tg.initDataUnsafe?.user?.id})
+            })
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById('complaints-list');
+                if (data.success && data.complaints && data.complaints.length > 0) {
+                    list.innerHTML = data.complaints.map(c => `
+                        <div class="card">
+                            <div><b>Жалоба на ${c.target_type}</b></div>
+                            <div>От: @${c.complainant}</div>
+                            <div>Причина: ${c.reason}</div>
+                            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                <button class="button small" onclick="resolveComplaint(${c.id})">✅ Рассмотрено</button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    list.innerHTML = '<p style="text-align: center; color: #666;">Нет жалоб</p>';
+                }
+            });
+        }
+        
+        function showBroadcastForm() {
+            document.getElementById('broadcast-modal').classList.add('show');
+        }
+        
+        function hideBroadcastForm() {
+            document.getElementById('broadcast-modal').classList.remove('show');
+        }
+        
+        function sendBroadcast() {
+            const text = document.getElementById('broadcast-text').value;
+            if (!text) {
+                tg.showAlert('❌ Введите текст рассылки');
+                return;
+            }
+            
+            fetch(`${API_URL}/admin/broadcast`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    admin_id: tg.initDataUnsafe?.user?.id,
+                    text: text
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    tg.showAlert(`✅ Рассылка отправлена ${data.sent} пользователям`);
+                    hideBroadcastForm();
+                }
+            });
+        }
+        
+        function showCreateStatusRequestForm() {
+            document.getElementById('status-request-modal').classList.add('show');
+        }
+        
+        function hideStatusRequestForm() {
+            document.getElementById('status-request-modal').classList.remove('show');
+        }
+        
+        function createStatusRequest() {
+            const requestData = {
+                user_type: document.getElementById('status-user-type').value,
+                user_id: document.getElementById('status-user-id').value,
+                requested_status: document.getElementById('status-target').value,
+                method: document.getElementById('status-method').value,
+                admin_id: tg.initDataUnsafe?.user?.id
+            };
+            
+            if (!requestData.user_id) {
+                tg.showAlert('❌ Введите ID пользователя');
+                return;
+            }
+            
+            fetch(`${API_URL}/admin/create_status_request`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(requestData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    tg.showAlert('✅ Заявка создана');
+                    hideStatusRequestForm();
+                }
+            });
+        }
+        
+        // ========== ВЫХОД ==========
+        function logout() {
+            tg.close();
         }
     </script>
 </body>
