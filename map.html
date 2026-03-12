@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Спокойный город - Карта</title>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=963eac3f-3de7-4370-baea-2f693321b88a&lang=ru_RU"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f0f2f5;
+        }
+        
+        #map {
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        .btn {
+            pointer-events: auto;
+            background: #2b5278;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+            flex: 1;
+            max-width: 200px;
+        }
+        
+        .btn:active {
+            transform: scale(0.95);
+        }
+        
+        .btn.secondary {
+            background: white;
+            color: #2b5278;
+        }
+        
+        .filters {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .filter-chip {
+            background: #f0f2f5;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        
+        .filter-chip.active {
+            background: #2b5278;
+            color: white;
+        }
+        
+        .popup {
+            position: fixed;
+            bottom: 100px;
+            left: 10px;
+            right: 10px;
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            z-index: 2000;
+            display: none;
+        }
+        
+        .popup.show {
+            display: block;
+        }
+        
+        .popup h3 {
+            color: #2b5278;
+            margin-bottom: 10px;
+        }
+        
+        .popup p {
+            margin: 8px 0;
+            line-height: 1.4;
+        }
+        
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    
+    <div class="filters">
+        <div class="filter-chip active" data-type="all">Все</div>
+        <div class="filter-chip" data-type="ДПС">🚔 ДПС</div>
+        <div class="filter-chip" data-type="ДТП">💥 ДТП</div>
+        <div class="filter-chip" data-type="яма">🕳️ Ямы</div>
+        <div class="filter-chip" data-type="перекрытие">🚧 Перекрытия</div>
+    </div>
+    
+    <div class="controls">
+        <button class="btn secondary" onclick="centerMap()">📍 Моё местоположение</button>
+        <button class="btn" onclick="addEvent()">➕ Сообщить</button>
+    </div>
+    
+    <div class="popup" id="eventPopup">
+        <span class="popup-close" onclick="closePopup()">&times;</span>
+        <div id="popupContent"></div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Разворачиваем на весь экран
+        tg.ready();
+        
+        let map;
+        let userLocation;
+        let allEvents = [];
+        let activeFilter = 'all';
+        let placemarks = [];
+        
+        // Инициализация карты
+        ymaps.ready(initMap);
+        
+        function initMap() {
+            map = new ymaps.Map("map", {
+                center: [48.707067, 44.516975], // Волгоград
+                zoom: 12,
+                controls: ['zoomControl']
+            });
+            
+            // Загружаем события
+            loadEvents();
+            
+            // Получаем местоположение пользователя
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        userLocation = [pos.coords.latitude, pos.coords.longitude];
+                    },
+                    (err) => {
+                        console.log("Геолокация не доступна:", err);
+                    }
+                );
+            }
+            
+            // Обработчики фильтров
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    activeFilter = chip.dataset.type;
+                    updateMap();
+                });
+            });
+        }
+        
+        function loadEvents() {
+            // Отправляем запрос к нашему API
+            fetch('/api/get_events', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: tg.initDataUnsafe?.user?.id
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    allEvents = data.events;
+                    updateMap();
+                }
+            })
+            .catch(err => console.error('Ошибка загрузки событий:', err));
+        }
+        
+        function updateMap() {
+            // Удаляем старые метки
+            placemarks.forEach(p => map.geoObjects.remove(p));
+            placemarks = [];
+            
+            // Фильтруем события
+            const filtered = allEvents.filter(e => {
+                if (activeFilter === 'all') return true;
+                if (activeFilter === 'ДПС') return e.type.includes('ДПС');
+                if (activeFilter === 'ДТП') return e.type.includes('ДТП');
+                if (activeFilter === 'яма') return e.type.includes('яма');
+                if (activeFilter === 'перекрытие') return e.type.includes('перекрытие');
+                return true;
+            });
+            
+            // Добавляем новые метки
+            filtered.forEach(event => {
+                const placemark = new ymaps.Placemark(
+                    [event.lat, event.lon],
+                    {
+                        balloonContent: event.type,
+                        hintContent: event.type
+                    },
+                    {
+                        preset: getIcon(event.type)
+                    }
+                );
+                
+                placemark.events.add('click', () => {
+                    showEventPopup(event);
+                });
+                
+                map.geoObjects.add(placemark);
+                placemarks.push(placemark);
+            });
+        }
+        
+        function getIcon(type) {
+            if (type.includes('ДПС')) return 'islands#redIcon';
+            if (type.includes('ДТП')) return 'islands#orangeIcon';
+            if (type.includes('яма')) return 'islands#brownIcon';
+            if (type.includes('перекрытие')) return 'islands#yellowIcon';
+            return 'islands#blueIcon';
+        }
+        
+        function showEventPopup(event) {
+            const popup = document.getElementById('eventPopup');
+            const content = document.getElementById('popupContent');
+            
+            const time = new Date(event.time).toLocaleString('ru-RU', {
+                hour: '2-digit',
+                minute: '2-digit',
+                day: '2-digit',
+                month: '2-digit'
+            });
+            
+            content.innerHTML = `
+                <h3>${event.type}</h3>
+                <p><strong>📍 Адрес:</strong> ${event.address || 'не указан'}</p>
+                <p><strong>📝 Описание:</strong> ${event.comment || 'нет'}</p>
+                <p><strong>👤 От:</strong> @${event.author} (${event.author_rating} ⭐)</p>
+                <p><strong>🕐 Время:</strong> ${time}</p>
+                <p><strong>👍 Подтверждения:</strong> ${event.confirmations}</p>
+                <p><strong>👎 Жалобы:</strong> ${event.fake_reports}</p>
+                <p><strong>🏘 Район:</strong> ${event.district || 'не определен'}</p>
+            `;
+            
+            popup.classList.add('show');
+        }
+        
+        function closePopup() {
+            document.getElementById('eventPopup').classList.remove('show');
+        }
+        
+        function centerMap() {
+            if (userLocation) {
+                map.setCenter(userLocation, 15);
+            } else {
+                tg.showAlert('Не удалось определить местоположение');
+            }
+        }
+        
+        function addEvent() {
+            if (userLocation) {
+                tg.sendData(JSON.stringify({
+                    action: 'add_event',
+                    lat: userLocation[0],
+                    lon: userLocation[1]
+                }));
+                tg.showAlert('Функция создания события скоро будет доступна!');
+            } else {
+                tg.showAlert('Сначала определите местоположение');
+            }
+        }
+        
+        // Слушаем сообщения от бота
+        window.addEventListener('message', (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                if (data.action === 'refresh') {
+                    loadEvents();
+                }
+            } catch (e) {}
+        });
+    </script>
+</body>
+</html>
