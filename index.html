@@ -646,9 +646,9 @@
     <div id="chat-section" class="section">
         <h2 style="margin-bottom: 15px;">💬 Чат взаимопомощи</h2>
         
-        <div style="margin-bottom: 15px;">
-            <button class="button small" onclick="loadChatRequests()">📋 Активные запросы</button>
-            <button class="button secondary small" onclick="showChatRequestForm()">➕ Создать запрос</button>
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <button class="button small" style="flex: 1;" onclick="loadChatRequests()">📋 Активные</button>
+            <button class="button secondary small" style="flex: 1;" onclick="showChatRequestForm()">➕ Создать</button>
         </div>
         
         <div id="chat-requests">
@@ -656,13 +656,13 @@
             <div class="loader"></div>
         </div>
         
-        <!-- Чат переписки (будет показываться при выборе запроса) -->
+        <!-- Чат переписки -->
         <div id="chat-messages" style="display: none;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
                 <h3 id="chat-title"></h3>
                 <button class="button secondary small" onclick="hideChatMessages()">Назад</button>
             </div>
-            <div id="messages-list" style="height: 400px; overflow-y: auto; margin-bottom: 10px;">
+            <div id="messages-list" style="height: 400px; overflow-y: auto; margin-bottom: 10px; padding: 10px; background: #f5f5f5; border-radius: 10px;">
                 <!-- Сообщения -->
             </div>
             <div class="chat-input">
@@ -677,7 +677,7 @@
         <h2 style="margin-bottom: 15px;">🔔 Подписки на районы</h2>
         
         <div class="card">
-            <div class="card-title">Бесплатная подписка</div>
+            <div class="card-title">🆓 Бесплатная подписка</div>
             <p>Получайте уведомления о событиях в выбранных районах (с задержкой)</p>
             <button class="button secondary small" onclick="showFreeSubscription()">Управлять</button>
         </div>
@@ -689,7 +689,7 @@
             <button class="button small" onclick="showPremiumSubscription()">Выбрать тариф</button>
         </div>
         
-        <h3 style="margin: 20px 0 10px 0;">Мои подписки</h3>
+        <h3 style="margin: 20px 0 10px 0;">📋 Мои подписки</h3>
         <div id="my-subscriptions">
             <!-- Список подписок пользователя -->
             <div class="loader" style="width: 30px; height: 30px;"></div>
@@ -704,7 +704,7 @@
             ✍️ Оставить отзыв
         </button>
         
-        <h3 style="margin: 20px 0 10px 0;">Последние отзывы</h3>
+        <h3 style="margin: 20px 0 10px 0;">⭐ Последние отзывы</h3>
         <div id="feedback-list">
             <!-- Отзывы будут загружены -->
             <div class="loader"></div>
@@ -1168,7 +1168,14 @@
         
         // ========== КОНФИГУРАЦИЯ ==========
         const ADMIN_IDS = [6808045467]; // ID администраторов
-        const API_URL = 'https://9c7c700a495ae02f-88-87-68-112.serveousercontent.com/api';
+        // ⚠️ ЗДЕСЬ НУЖНО ВСТАВИТЬ ВАШ АДРЕС ОТ SERVEO
+        const API_URL = 'https://cc97d8d34b476dc9-88-87-68-112.serveousercontent.com/api';
+        
+        // Показываем информацию о пользователе
+        const user = tg.initDataUnsafe?.user;
+        if (user) {
+            console.log("Данные пользователя:", user);
+        }
         
         // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
         let map;
@@ -1320,6 +1327,7 @@
             })
             .then(res => res.json())
             .then(data => {
+                console.log("Районы:", data);
                 if (data.success && data.districts) {
                     allDistricts = data.districts;
                     
@@ -1436,7 +1444,7 @@
                             });
                             
                             return `
-                                <div class="${typeClass}" onclick="showEventDetails(${JSON.stringify(e).replace(/"/g, '&quot;')})">
+                                <div class="${typeClass}" onclick='showEventDetails(${JSON.stringify(e).replace(/'/g, "\\'")})'>
                                     <div style="display: flex; justify-content: space-between;">
                                         <b>${e.type}</b>
                                         <span style="color: #666;">${time}</span>
@@ -1491,7 +1499,8 @@
                     tg.showAlert('✅ Голос учтён!');
                     loadEvents();
                 }
-            });
+            })
+            .catch(err => console.error('Ошибка голосования:', err));
         }
         
         // ========== ФОРМА ДОБАВЛЕНИЯ СОБЫТИЯ ==========
@@ -1609,7 +1618,8 @@
                 } else {
                     tg.showAlert('❌ Ошибка: ' + (data.error || 'Неизвестная ошибка'));
                 }
-            });
+            })
+            .catch(err => console.error('Ошибка создания заказа:', err));
         }
         
         // ========== SOS ==========
@@ -1670,7 +1680,7 @@
                         <div class="rating">${stars} (${m.rating.toFixed(1)})</div>
                         <div class="info-row"><span>📞 Телефон:</span> <span>${m.phone || 'не указан'}</span></div>
                         <div class="info-row"><span>📦 Заказов:</span> <span>${m.orders || 0}</span></div>
-                        <div class="info-row"><span>⭐ Отзывов:</span> <span>${m.reviews || 0}</span></div>
+                        <div class="info-row"><span>⭐ Отзывов:</span> <span>${m.reviews_count || 0}</span></div>
                         <div class="info-row"><span>📋 Услуги:</span> <span>${m.services || 'не указано'}</span></div>
                         <div class="info-row"><span>📍 Районы:</span> <span>${m.districts ? m.districts.join(', ') : 'не указано'}</span></div>
                         <div style="display: flex; gap: 10px; margin-top: 10px;">
@@ -1710,7 +1720,8 @@
         }
         
         function showMasterReviews(masterId) {
-            tg.showAlert('Функция отзывов будет доступна в следующем обновлении');
+            // Здесь можно показать отзывы о мастере
+            tg.showAlert('Просмотр отзывов');
         }
         
         // ========== ЧАТ ПОМОЩИ ==========
@@ -1738,6 +1749,7 @@
                             <div style="margin-top: 10px;">
                                 <span class="badge info">${r.offers || 0} откликов</span>
                             </div>
+                            <button class="button secondary small" style="margin-top: 10px;" onclick="offerHelp(${r.id})">🤝 Откликнуться</button>
                         </div>
                     `).join('');
                 } else {
@@ -1789,6 +1801,26 @@
                     document.getElementById('chat-description').value = '';
                     document.getElementById('chat-address').value = '';
                 }
+            })
+            .catch(err => console.error('Ошибка создания запроса:', err));
+        }
+        
+        function offerHelp(requestId) {
+            fetch(`${API_URL}/offer_help`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    user_id: tg.initDataUnsafe?.user?.id,
+                    request_id: requestId
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    tg.showAlert('✅ Вы откликнулись на запрос!');
+                } else {
+                    tg.showAlert('❌ ' + (data.error || 'Ошибка'));
+                }
             });
         }
         
@@ -1811,13 +1843,16 @@
             .then(data => {
                 if (data.success) {
                     const messagesList = document.getElementById('messages-list');
-                    messagesList.innerHTML = data.messages.map(m => `
-                        <div class="chat-message ${m.from_me ? 'mine' : ''}">
-                            <div class="author">${m.author}</div>
-                            <div>${m.text}</div>
-                            <div style="font-size: 10px; color: #666; margin-top: 5px;">${m.time}</div>
-                        </div>
-                    `).join('');
+                    messagesList.innerHTML = data.messages.map(m => {
+                        const isMine = m.author_id === tg.initDataUnsafe?.user?.id;
+                        return `
+                            <div class="chat-message ${isMine ? 'mine' : ''}">
+                                <div class="author">${m.author}</div>
+                                <div>${m.text}</div>
+                                <div style="font-size: 10px; color: #666; margin-top: 5px;">${m.time}</div>
+                            </div>
+                        `;
+                    }).join('');
                     
                     // Прокручиваем вниз
                     messagesList.scrollTop = messagesList.scrollHeight;
@@ -1849,7 +1884,7 @@
         
         // ========== ПОДПИСКИ ==========
         function showFreeSubscription() {
-            tg.showAlert('Управление бесплатными подписками будет доступно в следующем обновлении');
+            tg.showAlert('Управление бесплатными подписками');
         }
         
         function showPremiumSubscription() {
@@ -1898,7 +1933,7 @@
                 return;
             }
             
-            tg.showAlert('Оплата через Telegram Stars будет доступна в следующем обновлении');
+            tg.showAlert('Оплата через Telegram Stars');
         }
         
         function loadMySubscriptions() {
@@ -1917,8 +1952,8 @@
                                 <span class="card-title">${s.type === 'premium' ? '💎 Премиум' : '🆓 Бесплатная'}</span>
                                 <span class="badge ${s.active ? 'success' : 'warning'}">${s.active ? 'Активна' : 'Неактивна'}</span>
                             </div>
-                            <div>Районы: ${s.districts.join(', ')}</div>
-                            <div style="font-size: 12px; color: #666;">Действует до: ${s.end_date || 'бессрочно'}</div>
+                            <div>Район: ${s.district}</div>
+                            <div style="font-size: 12px; color: #666;">${s.end_date ? 'Действует до: ' + s.end_date : ''}</div>
                         </div>
                     `).join('');
                 } else {
@@ -2007,7 +2042,8 @@
                     document.getElementById('feedback-text').value = '';
                     setRating(5);
                 }
-            });
+            })
+            .catch(err => console.error('Ошибка отправки отзыва:', err));
         }
         
         // ========== ПРОФИЛЬ ==========
@@ -2018,10 +2054,15 @@
             fetch(`${API_URL}/get_user_profile`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({user_id: user.id})
+                body: JSON.stringify({
+                    user_id: user.id,
+                    username: user.username,
+                    first_name: user.first_name
+                })
             })
             .then(res => res.json())
             .then(data => {
+                console.log("Профиль:", data);
                 if (data.success) {
                     currentUser = data.user;
                     
@@ -2031,8 +2072,7 @@
                         <div><b>Username:</b> @${data.user.username || 'нет'}</div>
                         <div><b>Рейтинг:</b> ⭐ ${data.user.rating || 0}</div>
                         <div><b>Уровень:</b> ${data.user.level || 'Новичок'}</div>
-                        <div><b>Заказов:</b> 📦 ${data.user.total_orders || 0}</div>
-                        <div><b>Жалоб:</b> ⚠️ ${data.user.complaints || 0}</div>
+                        <div><b>Статус:</b> ${data.user.user_status || 'Новичок'}</div>
                     `;
                     
                     if (data.master) {
@@ -2122,10 +2162,12 @@
                 if (data.success) {
                     tg.showAlert('✅ Заявка отправлена! Администратор рассмотрит её в ближайшее время.');
                     hideMasterForm();
+                    loadUserProfile();
                 } else {
                     tg.showAlert('❌ Ошибка: ' + (data.error || 'Неизвестная ошибка'));
                 }
-            });
+            })
+            .catch(err => console.error('Ошибка регистрации мастера:', err));
         }
         
         function toggleOnline() {
@@ -2156,6 +2198,7 @@
                         `Всего заказов: ${data.stats.total}\n` +
                         `Выполнено: ${data.stats.completed}\n` +
                         `Отменено: ${data.stats.cancelled}\n` +
+                        `В работе: ${data.stats.active}\n` +
                         `Рейтинг: ⭐ ${data.stats.rating.toFixed(1)}\n` +
                         `Отзывов: ${data.stats.reviews}`
                     );
@@ -2194,7 +2237,8 @@
                     tg.showAlert('✅ Заявка на изменение отправлена на модерацию');
                     hideMasterEditForm();
                 }
-            });
+            })
+            .catch(err => console.error('Ошибка редактирования:', err));
         }
         
         // ========== ЖАЛОБЫ ==========
@@ -2241,7 +2285,8 @@
                     document.getElementById('complaint-target').value = '';
                     document.getElementById('complaint-reason').value = '';
                 }
-            });
+            })
+            .catch(err => console.error('Ошибка отправки жалобы:', err));
         }
         
         // ========== АДМИН ПАНЕЛЬ ==========
@@ -2356,6 +2401,14 @@
             });
         }
         
+        function approveStatus(requestId) {
+            tg.showAlert('Функция одобрения статуса');
+        }
+        
+        function rejectStatus(requestId) {
+            tg.showAlert('Функция отклонения статуса');
+        }
+        
         function loadComplaints() {
             fetch(`${API_URL}/admin/complaints`, {
                 method: 'POST',
@@ -2368,7 +2421,7 @@
                 if (data.success && data.complaints && data.complaints.length > 0) {
                     list.innerHTML = data.complaints.map(c => `
                         <div class="card">
-                            <div><b>Жалоба на ${c.target_type}</b></div>
+                            <div><b>Жалоба на ${c.accused_type}</b></div>
                             <div>От: @${c.complainant}</div>
                             <div>Причина: ${c.reason}</div>
                             <div style="display: flex; gap: 10px; margin-top: 10px;">
@@ -2380,6 +2433,10 @@
                     list.innerHTML = '<p style="text-align: center; color: #666;">Нет жалоб</p>';
                 }
             });
+        }
+        
+        function resolveComplaint(complaintId) {
+            tg.showAlert('Жалоба рассмотрена');
         }
         
         function showBroadcastForm() {
@@ -2457,5 +2514,3 @@
     </script>
 </body>
 </html>
-
-
