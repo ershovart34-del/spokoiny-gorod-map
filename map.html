@@ -153,33 +153,41 @@
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Разворачиваем на весь экран
+        tg.expand();
         tg.ready();
         
         let map;
-        let userLocation;
+        let userLocation = null;
         let allEvents = [];
         let activeFilter = 'all';
         let placemarks = [];
         
-        // Инициализация карты
+        // ========== ВАШ АДРЕС API ==========
+        // ЗДЕСЬ НУЖНО ВСТАВИТЬ АДРЕС ОТ SERVEO
+        const API_URL = 'https://eb6b55ab90e96a1f-88-87-68-112.serveousercontent.com/api';
+        // ===================================
+        
         ymaps.ready(initMap);
         
         function initMap() {
             map = new ymaps.Map("map", {
-                center: [48.707067, 44.516975], // Волгоград
+                center: [48.707067, 44.516975],
                 zoom: 12,
                 controls: ['zoomControl']
             });
             
+            // Проверяем работу API
+            testAPI();
+            
             // Загружаем события
             loadEvents();
             
-            // Получаем местоположение пользователя
+            // Получаем местоположение
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (pos) => {
                         userLocation = [pos.coords.latitude, pos.coords.longitude];
+                        console.log("Местоположение получено:", userLocation);
                     },
                     (err) => {
                         console.log("Геолокация не доступна:", err);
@@ -187,7 +195,7 @@
                 );
             }
             
-            // Обработчики фильтров
+            // Фильтры
             document.querySelectorAll('.filter-chip').forEach(chip => {
                 chip.addEventListener('click', () => {
                     document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
@@ -198,33 +206,47 @@
             });
         }
         
+        function testAPI() {
+            fetch(`${API_URL}/test`)
+                .then(res => res.json())
+                .then(data => {
+                    console.log("✅ API работает:", data);
+                })
+                .catch(err => {
+                    console.error("❌ API не отвечает:", err);
+                    tg.showAlert('Ошибка подключения к серверу!\nПроверьте, запущен ли бот и правильно ли указан адрес API.');
+                });
+        }
+        
         function loadEvents() {
-            // Отправляем запрос к нашему API
-            fetch('/api/get_events', {
+            fetch(`${API_URL}/get_events`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    user_id: tg.initDataUnsafe?.user?.id
+                    user_id: tg.initDataUnsafe?.user?.id || 0
                 })
             })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
                     allEvents = data.events;
+                    console.log(`✅ Загружено событий: ${allEvents.length}`);
                     updateMap();
+                } else {
+                    console.error("Ошибка загрузки:", data.error);
                 }
             })
-            .catch(err => console.error('Ошибка загрузки событий:', err));
+            .catch(err => {
+                console.error('Ошибка загрузки событий:', err);
+            });
         }
         
         function updateMap() {
-            // Удаляем старые метки
             placemarks.forEach(p => map.geoObjects.remove(p));
             placemarks = [];
             
-            // Фильтруем события
             const filtered = allEvents.filter(e => {
                 if (activeFilter === 'all') return true;
                 if (activeFilter === 'ДПС') return e.type.includes('ДПС');
@@ -234,7 +256,6 @@
                 return true;
             });
             
-            // Добавляем новые метки
             filtered.forEach(event => {
                 const placemark = new ymaps.Placemark(
                     [event.lat, event.lon],
@@ -297,7 +318,7 @@
             if (userLocation) {
                 map.setCenter(userLocation, 15);
             } else {
-                tg.showAlert('Не удалось определить местоположение');
+                tg.showAlert('Не удалось определить местоположение. Разрешите доступ к геолокации.');
             }
         }
         
@@ -308,21 +329,11 @@
                     lat: userLocation[0],
                     lon: userLocation[1]
                 }));
-                tg.showAlert('Функция создания события скоро будет доступна!');
+                tg.showAlert('Функция создания события будет доступна в следующем обновлении!');
             } else {
                 tg.showAlert('Сначала определите местоположение');
             }
         }
-        
-        // Слушаем сообщения от бота
-        window.addEventListener('message', (event) => {
-            try {
-                const data = JSON.parse(event.data);
-                if (data.action === 'refresh') {
-                    loadEvents();
-                }
-            } catch (e) {}
-        });
     </script>
 </body>
 </html>
